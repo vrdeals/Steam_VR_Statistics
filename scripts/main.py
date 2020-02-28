@@ -79,6 +79,7 @@ def get_vrgames_players(appid):  # Get the number of players of a game for each 
 
 
 def main():
+    print(test)
     database_location = '../database/vr_games.db'
     conn = sqlite3.connect(database_location)
     c = conn.cursor()
