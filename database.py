@@ -1,6 +1,6 @@
 def create_database(c):
     c.execute('''CREATE TABLE IF NOT EXISTS vr_games (appid integer NOT NULL, title text NOT NULL)''')
-    c.execute('''CREATE TABLE IF NOT EXISTS vr_players (appid integer NOT NULL, date text NOT NULL, players real)''')
+    c.execute('''CREATE TABLE IF NOT EXISTS vr_players (appid integer NOT NULL, month text NOT NULL, players real)''')
 
 
 def check_game(c, val):
