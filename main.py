@@ -3,7 +3,7 @@ import requests
 import json
 import datetime
 from time import strptime
-from scripts import database
+import database
 import sqlite3
 
 
@@ -76,7 +76,7 @@ def get_vrgames_players(appid):  # Get the number of players of a game for each 
 
 
 def main():
-    database_location = '../database/vr_games.db'
+    database_location = 'vr_games.db'
     conn = sqlite3.connect(database_location)
     c = conn.cursor()
     database.create_database(c)
