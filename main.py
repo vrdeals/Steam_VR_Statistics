@@ -78,10 +78,11 @@ def get_vrgames_players(appid):
 
 
 def main():
-    database_location = 'vr_games.db'
+    database_location = 'vr_games_database.db'
     conn = sqlite3.connect(database_location)
     c = conn.cursor()
     database.create_database(c)
+    database.last_update(c)
     games = get_vrgames_steam(c)
     for game in games:
         game.number_of_players()
