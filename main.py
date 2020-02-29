@@ -27,7 +27,8 @@ class Game:
             database.add_players(c, (self.appid, date, players))
 
 
-def get_vrgames_steam(c):  # Get the appid and name of all steam VR games, sorted by release date(desc) and vr only tag
+def get_vrgames_steam(c):
+    # Get the appid and name of all steam VR games, sorted by release date(desc) and vr only tag
     infinite_scrolling = 0
     counter = 0
     games = []
@@ -52,7 +53,8 @@ def get_vrgames_steam(c):  # Get the appid and name of all steam VR games, sorte
             return games
 
 
-def get_vrgames_players(appid):  # Get the number of players of a game for each month since release
+def get_vrgames_players(appid):
+    # Get the number of players of a game for each month since release
     players = []
     url = 'https://steamcharts.com/app/' + appid
     page = requests.get(url)
