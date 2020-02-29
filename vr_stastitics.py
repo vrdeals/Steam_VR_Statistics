@@ -1,4 +1,3 @@
-import sqlite3
 import matplotlib.pyplot as plt
 from dateutil import parser
 # from matplotlib import style
@@ -22,14 +21,8 @@ def graph_data(data):
     plt.show()
 
 
-def main():
+def statistics(c):
     # style.use('fivethirtyeight')
-    database_location = 'vr_games_database.db'
-    conn = sqlite3.connect(database_location)
-    c = conn.cursor()
     data = database.avg_players(c)
     graph_data(data)
 
-
-if __name__ == "__main__":
-    main()

@@ -100,11 +100,12 @@ def main():
         database.reset(c)
         for game in games:
             game.add_game_to_database(c)
-    conn.commit()
-    conn.close()
+
     print("The database is up to date. "
           "All VR only games and the number of players until the end of last month are included in the statistics.")
-    vr_stastitics.main()
+    vr_stastitics.statistics(c)
+    conn.commit()
+    conn.close()
 
 
 if __name__ == "__main__":
