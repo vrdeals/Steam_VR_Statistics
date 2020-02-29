@@ -28,7 +28,7 @@ class Game:
 
 
 def get_vrgames_steam(c):
-    # Get the appid and name of all steam VR games, sorted by release date(desc) and vr only tag
+    """Get the appid and name of all steam VR games with a vr only tag, sorted by release date(desc)"""
     infinite_scrolling = 0
     counter = 0
     games = []
@@ -54,7 +54,7 @@ def get_vrgames_steam(c):
 
 
 def get_vrgames_players(appid):
-    # Get the number of players of a game for each month since release
+    """Get the number of players of a game for each month since release"""
     players = []
     url = 'https://steamcharts.com/app/' + appid
     page = requests.get(url)
