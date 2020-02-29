@@ -21,6 +21,17 @@ def add_players(c, val):
     c.execute('''INSERT INTO vr_players(appid,date,players) VALUES(?,?,?)''', val)
 
 
+def avg_players(c):
+    c.execute('''
+    SELECT date, sum(players) as "AVG Players" FROM vr_players
+    INNER JOIN vr_games ON vr_games.appid = vr_players.appid
+    WHERE players >= 1 and date >= "2016-03"
+    GROUP by date
+    ORDER by date
+    ''')
+    return c.fetchall()
+
+
 def reset(c):
     c.execute('DELETE FROM vr_games;')
     c.execute('DELETE FROM vr_players;')

@@ -4,6 +4,7 @@ import json
 import datetime
 from time import strptime
 import database
+import vr_stastitics
 import sqlite3
 
 
@@ -33,9 +34,8 @@ def get_vrgames_steam():
     counter = 0
     games = []
     while True:
-        url = 'https://store.steampowered.com/search/results/?query&start=' + str(infinite_scrolling) + \
-                '&count=50&dynamic_data=&sort_by=Released_DESC&force_infinite=1&vrsupport=401&snr=1_7_7_230_7&' \
-                'infinite=1'
+        url = 'https://store.steampowered.com/search/results/?query&start={}&count=50&dynamic_data=&sort_by=Released_' \
+              'DESC&force_infinite=1&vrsupport=401&snr=1_7_7_230_7&infinite=1'.format(infinite_scrolling)
         json_data = json.loads(requests.get(url).text)
         if json_data["results_html"] != "\r\n<!-- List Items -->\r\n<!-- End List Items -->\r\n":
             tree = html.fromstring(json_data["results_html"])
@@ -53,7 +53,7 @@ def get_vrgames_steam():
 def get_vrgames_players(appid):
     """Get the number of players of a game for each month since release"""
     players = []
-    url = 'https://steamcharts.com/app/' + appid
+    url = 'https://steamcharts.com/app/{}'.format(appid)
     page = requests.get(url)
     tree = html.fromstring(page.content)
     date_list = tree.xpath('//td[@class="month-cell left"]/text()')
@@ -104,6 +104,7 @@ def main():
     conn.close()
     print("The database is up to date. "
           "All VR only games and the number of players until the end of last month are included in the statistics.")
+    vr_stastitics.main()
 
 
 if __name__ == "__main__":
