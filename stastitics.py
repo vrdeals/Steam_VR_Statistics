@@ -21,7 +21,7 @@ def graph_data(data):
     plt.show()
 
 
-def statistics(c):
+def charts(c):
     # style.use('fivethirtyeight')
     data = database.avg_players(c)
     graph_data(data)

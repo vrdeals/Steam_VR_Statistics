@@ -4,7 +4,7 @@ import json
 import datetime
 from time import strptime
 import database
-import vr_stastitics
+import stastitics
 import sqlite3
 
 
@@ -103,7 +103,7 @@ def main():
 
     print("The database is up to date. "
           "All VR only games and the number of players until the end of last month are included in the statistics.")
-    vr_stastitics.statistics(c)
+    stastitics.charts(c)
     conn.commit()
     conn.close()
 
