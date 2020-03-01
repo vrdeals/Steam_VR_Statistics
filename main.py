@@ -102,7 +102,6 @@ def main():
         database.reset(c)
         for game in games:
             game.add_game_to_database(c)
-
     print("The database is up to date. "
           "All VR only games and the number of players until the end of last month are included in the statistics.")
     stastitics.charts(c)
