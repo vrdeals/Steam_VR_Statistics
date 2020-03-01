@@ -4,7 +4,7 @@ from matplotlib import style
 import database
 
 
-def graph_data(data):
+def graph_data(data, title):
     dates = []
     values = []
     for row in data:
@@ -12,7 +12,7 @@ def graph_data(data):
         values.append(row[1])
     # plt.plot(dates, values, "-b", label="average number of players")
     plt.plot_date(dates, values, '-')
-    plt.title("Average number of players on Steam(VR games only)",
+    plt.title(title,
               # fontdict={'family': 'arial',
               #           'color': 'black',
               #           'weight': 'bold',
@@ -26,5 +26,6 @@ def graph_data(data):
 def charts(c):
     style.use('seaborn-dark')
     data = database.avg_players(c)
-    graph_data(data)
+    graph_data(data, "Average number of players on Steam(VR games only)")
+    # graph_data(data, "Peak number of players on Steam(VR games only)")
 

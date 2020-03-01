@@ -1,6 +1,7 @@
 def create_database(c):
     c.execute('''CREATE TABLE IF NOT EXISTS vr_games (appid integer NOT NULL, title text NOT NULL)''')
-    c.execute('''CREATE TABLE IF NOT EXISTS vr_players (appid integer NOT NULL, date text NOT NULL, players real)''')
+    c.execute('''CREATE TABLE IF NOT EXISTS vr_players (appid integer NOT NULL, date text NOT NULL, 
+    players real NOT NULL, peak integer NOT NULL)''')
 
 
 # def check_game(c, val):
@@ -18,14 +19,14 @@ def add_game(c, val):
 
 
 def add_players(c, val):
-    c.execute('''INSERT INTO vr_players(appid,date,players) VALUES(?,?,?)''', val)
+    c.execute('''INSERT INTO vr_players(appid,date,players,peak) VALUES(?,?,?,?)''', val)
 
 
 def avg_players(c):
     c.execute('''
-    SELECT date, sum(players) as "AVG Players" FROM vr_players
+    SELECT date, sum(players) FROM vr_players
     INNER JOIN vr_games ON vr_games.appid = vr_players.appid
-    WHERE players >= 1 and date >= "2016-03"
+    WHERE players >= 1 and date >= "2016-03" and date != "2019-07"
     GROUP by date
     ORDER by date
     ''')

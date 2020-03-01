@@ -25,7 +25,8 @@ class Game:
         for item in self.players:
             date = item[0]
             players = item[1]
-            database.add_players(c, (self.appid, date, players))
+            peak = item[2]
+            database.add_players(c, (self.appid, date, players, peak))
 
 
 def get_vrgames_steam():
@@ -58,13 +59,14 @@ def get_vrgames_players(appid):
     tree = html.fromstring(page.content)
     date_list = tree.xpath('//td[@class="month-cell left"]/text()')
     players_list = tree.xpath('//td[@class="right num-f"]/text()')
+    players_peak_list = tree.xpath('//td[@class="right num"]/text()')
     if players_list:
-        for date, avg_players in zip(date_list, players_list):
+        for date, avg_players, peak_players in zip(date_list, players_list, players_peak_list):
             date = date.strip().split(" ")
             month = '%0.2d' % strptime(date[0], '%B').tm_mon
             year = date[1]
             date = "{}-{}".format(year, month)
-            players.append([date, avg_players])
+            players.append([date, avg_players, peak_players])
     if not players:
         players = ""
     return players
