@@ -34,7 +34,7 @@ def bar_diagram(data):
     ax.set_yticklabels(top10games)
     ax.invert_yaxis()  # labels von oben nach unten
     # ax.set_xlabel('')
-    ax.set_title('Top 10 maximum number of simultaneous players on steam')
+    ax.set_title('Top 10 number of simultaneous players on Steam')
     plt.grid(True)
 
 
@@ -43,16 +43,9 @@ def main():
     sqlite_query.create_database(conn)
     style.use('seaborn-dark')
     data = sqlite_query.peak_players_online(conn)
-    plt.figure(1)
     graph_data(data)
     data = sqlite_query.top10(conn)
-    print(data)
     bar_diagram(data)
-    # top5 = [620980, 555160, 823500, 629730, 471710]
-    # plt.figure(2)
-    # for item in top5:
-    #     data = sqlite_query.peak_players_appid(conn, item)
-    #     graph_data(data, "TupPeak number of players on Steam (VR games only)")
     plt.show()
 
 
