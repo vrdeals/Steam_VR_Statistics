@@ -58,6 +58,33 @@ def peak_players_online(conn):
     return c.fetchall()
 
 
+def peak_players_appid(conn, val):
+    c = conn.cursor()
+    c.execute('''
+    select Date, avg(Number) as maxnumber from (
+    SELECT strftime('%Y-%m', date) as Date, sum(players) as Number FROM vr_players
+    where appid = {} and date >= "2017-03" and date != '2019-07-24'
+    GROUP by date
+    ORDER by Number desc)
+    GROUP by Date
+    Order by Date
+    '''.format(val))
+    return c.fetchall()
+
+
+def top10(conn):
+    c = conn.cursor()
+    c.execute('''
+    SELECT title, max(players) as maxplayers from vr_players
+    INNER JOIN vr_games ON vr_games.appid = vr_players.appid
+    WHERE date != '2019-07-24' and vr_players.appid != 450110
+    Group by vr_players.appid
+    Order by maxplayers DESC
+    Limit 10
+    ''')
+    return c.fetchall()
+
+
 def reset(conn):
     c = conn.cursor()
     c.execute('DELETE FROM vr_games;')
