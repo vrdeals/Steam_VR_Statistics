@@ -23,10 +23,7 @@ def main():
     conn = sqlite3.connect('vr_games_database.db')
     sqlite_query.create_database(conn)
     style.use('seaborn-dark')
-    # data = sqlite_query.avg_players_online(conn)
     data = sqlite_query.peak_players_online(conn)
-    # graph_data(data, "Daily peak number of players on Steam online (VR games only)")
-    # data = database.peak_players_online(c)
     graph_data(data, "Peak number of players on Steam (VR games only)")
     plt.show()
 
