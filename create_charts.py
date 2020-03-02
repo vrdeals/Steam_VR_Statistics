@@ -14,7 +14,7 @@ def graph_data(data):
         values.append(item[1])
     # plt.plot(dates, values, "-b", label="average number of players")
     plt.plot_date(dates, values, '-')
-    plt.title("Peak number of players on Steam (VR games only)")
+    plt.title("Number of players on Steam (VR games only)\nbased on the monthly average of the daily peak values")
     # plt.legend(loc="upper left")
     plt.grid(True)
 

@@ -39,7 +39,7 @@ def daily_players_online(conn):
     c.execute('''
     SELECT date, sum(players) FROM vr_players
     INNER JOIN vr_games ON vr_games.appid = vr_players.appid
-    WHERE date >= "2017-03" and date != '2019-07-24'
+    WHERE date != '2019-07-24'
     GROUP by date
     ORDER by date
     ''')
@@ -51,6 +51,7 @@ def peak_players_online(conn):
     c.execute('''
     select Date, avg(Number) as maxnumber from (
     SELECT strftime('%Y-%m', date) as Date, sum(players) as Number FROM vr_players
+    WHERE date != '2019-07-24'
     GROUP by date)
     GROUP by Date
     Order by Date
@@ -63,7 +64,7 @@ def peak_players_appid(conn, val):
     c.execute('''
     select Date, avg(Number) as maxnumber from (
     SELECT strftime('%Y-%m', date) as Date, sum(players) as Number FROM vr_players
-    where appid = {} and date >= "2017-03" and date != '2019-07-24'
+    where appid = {} and date != '2019-07-24'
     GROUP by date
     ORDER by Number desc)
     GROUP by Date
