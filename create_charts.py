@@ -25,7 +25,6 @@ def bar_diagram(data):
     style.use('seaborn-dark')
     fig, ax = plt.subplots()
     for item in data:
-        print(item[0])
         top10games.append(item[0])
         top10players.append(item[1])
     y_pos = np.arange(len(top10games))
@@ -34,7 +33,7 @@ def bar_diagram(data):
     ax.set_yticklabels(top10games)
     ax.invert_yaxis()  # labels von oben nach unten
     # ax.set_xlabel('')
-    ax.set_title('Top 10 number of simultaneous players on Steam')
+    ax.set_title('Top 10 VR games with the highest daily peak reached on Steam')
     plt.grid(True)
 
 

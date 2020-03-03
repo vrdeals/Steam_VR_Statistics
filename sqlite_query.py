@@ -51,7 +51,7 @@ def peak_players_online(conn):
     c.execute('''
     select Date, avg(Number) as maxnumber from (
     SELECT strftime('%Y-%m', date) as Date, sum(players) as Number FROM vr_players
-    WHERE date != '2019-07-24'
+    WHERE date != '2019-07-24' and date > '2016-03-01'
     GROUP by date)
     GROUP by Date
     Order by Date
