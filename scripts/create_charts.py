@@ -27,7 +27,7 @@ def peak_players_online(conn):
     style.use('seaborn-dark')
     plt.figure(figsize=(9, 5))
     plt.plot_date(dates, values, '-')
-    plt.title("Number of players on Steam (VR games only)\nbased on the monthly average of the daily peak values")
+    plt.title("Progress of VR usage based on the monthly average of the daily peak values of all Steam VR only games.")
     plt.grid(True)
     plt.savefig('../images/vrgames_avg_peak_over_time.png')
 
@@ -68,7 +68,7 @@ def top10_2020(conn):
     sns.set_color_codes("muted")
     fig = sns.barplot(x="avg_players", y="game", data=top10,
                       label="The average number of daily players (avg peak per day)", color="b")
-    fig.axes.set_title("The most played Steam VR games since 2020", fontsize=11)
+    fig.axes.set_title("The most played Steam VR games since 2020", fontsize=10)
     fig.set_xlabel("")
     fig.set_ylabel("")
 
