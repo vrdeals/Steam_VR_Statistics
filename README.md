@@ -3,7 +3,7 @@ Determines all Steam VR only games and the number of players. The required infor
 <p align="left">
   <img width="828" height="445" src="https://github.com/Bamux/Steam_VR_Statistics/blob/master/images/vrgames_top10_2020.png">
 </p>
-<p align="center">
+<p align="left">
   <img width="828" height="445" src="https://github.com/Bamux/Steam_VR_Statistics/blob/master/images/vrgames_avg_peak_over_time.png">
 </p>
 
