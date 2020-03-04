@@ -29,7 +29,7 @@ def peak_players_online(conn):
     plt.plot_date(dates, values, '-')
     plt.title("Progress of VR usage based on the monthly average of the daily peak values of all Steam VR only games.")
     plt.grid(True)
-    plt.savefig('../images/vrgames_avg_peak_over_time.png')
+    plt.savefig('../images/vrgames_avg_peak_over_time.png', bbox_inches='tight')
 
 
 def change_game_title(games):
@@ -77,7 +77,7 @@ def top10_2020(conn):
     sns.despine(left=True, bottom=True)
 
     # save plot
-    plt.savefig('../images/vrgames_top10_2020.png')
+    plt.savefig('../images/vrgames_top10_2020.png', bbox_inches='tight')
 
 
 def main():
