@@ -17,7 +17,6 @@ def get_vrgames_vrlfg():
     for item in json_data:
         if item["VROnly"] == 1 and item["Overlay"] == 0:
             games.append((item['gameid'], item["Name"]))
-
     return games
 
 
