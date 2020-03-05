@@ -16,6 +16,7 @@ def top10_2020(conn):
     games = sqlite_query.top10(conn)
     games = change_game_title(games)
 
+    # Defines the used graphic style and reduces the text size to fit all information on the chart
     sns.set_style("whitegrid")
     sns.set(font_scale=0.7)
 
