@@ -64,11 +64,11 @@ def peak_players_online(conn):
 
 def change_game_title(games):
     """Changes game title that are too long to be displayed in the chart"""
-    titles = ["Skyrim VR", "The Walking Dead", "Hot Dogs"]
+    shortened_title_names = ["Skyrim VR", "The Walking Dead", "Hot Dogs"]
     games_list = []
     for game in games:
         match = False
-        for title in titles:
+        for title in shortened_title_names:
             if title in game[0]:
                 games_list.append((title, game[1], game[2]))
                 match = True
