@@ -94,10 +94,13 @@ def main():
               'ytick.labelsize': 'small'}
     pylab.rcParams.update(params)
 
-    peak_players_online(conn)  # Creates chart one
-    top10_2020(conn)           # Creates chart two
+    # Creates the charts
+    peak_players_online(conn)
+    top10_2020(conn)
 
-    plt.show()  # Displays the charts
+    # Displays the charts
+    plt.show()
+
     print("The charts were successfully saved in the images folder.")
 
 
