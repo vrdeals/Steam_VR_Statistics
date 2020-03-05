@@ -1,8 +1,8 @@
 """The following external libraries must be installed: matplotlib, seaborn, pandas"""
 import sqlite3
-from matplotlib.ticker import MultipleLocator
 from dateutil import parser
 from matplotlib import pyplot as plt, style, pylab as pylab
+from matplotlib.ticker import MultipleLocator
 import seaborn as sns
 import pandas as pd
 import sqlite_query
