@@ -73,19 +73,6 @@ def peak_players_appid(conn, val):
     return c.fetchall()
 
 
-def top101(conn):
-    c = conn.cursor()
-    c.execute('''
-    SELECT title, max(players) as maxplayers from vr_players
-    INNER JOIN vr_games ON vr_games.appid = vr_players.appid
-    WHERE date != '2019-07-24' and vr_players.appid != 450110
-    Group by vr_players.appid
-    Order by maxplayers DESC
-    Limit 10
-    ''')
-    return c.fetchall()
-
-
 def top10(conn):
     c = conn.cursor()
     c.execute('''
