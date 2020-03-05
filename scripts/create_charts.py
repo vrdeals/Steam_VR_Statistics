@@ -9,36 +9,8 @@ import sqlite3
 from scripts import sqlite_query
 
 
-def peak_players_online(conn):
-    data = sqlite_query.peak_players_online(conn)
-    dates = []
-    values = []
-    for item in data:
-        dates.append(parser.parse(item[0]))
-        values.append(item[1])
-    style.use('seaborn-dark')
-    # plt.figure(figsize=(9, 5))
-    plt.plot_date(dates, values, '-')
-    plt.title("Progress of VR usage based on the monthly average of the daily peak values of all Steam VR only games.")
-    plt.grid(True)
-    plt.savefig('../images/vrgames_avg_peak_over_time.png', bbox_inches='tight')
-
-
-def change_game_title(games):
-    titles = ["Skyrim VR", "The Walking Dead", "Hot Dogs"]
-    games_list = []
-    for game in games:
-        match = False
-        for title in titles:
-            if title in game[0]:
-                games_list.append((title, game[1], game[2]))
-                match = True
-        if not match:
-            games_list.append((game[0], game[1], game[2]))
-    return games_list
-
-
 def top10_2020(conn):
+    """Creates a chart of the 10 most used VR games since 2020"""
     games = sqlite_query.top10(conn)
     games = change_game_title(games)
 
@@ -72,8 +44,42 @@ def top10_2020(conn):
     plt.savefig('../images/vrgames_top10_2020.png', bbox_inches='tight')
 
 
+def peak_players_online(conn):
+    """Creates a chart of the 10 most used VR games since 2020"""
+    data = sqlite_query.peak_players_online(conn)
+    dates = []
+    values = []
+    for item in data:
+        dates.append(parser.parse(item[0]))
+        values.append(item[1])
+    style.use('seaborn-dark')
+    plt.plot_date(dates, values, '-')
+    plt.title("Progress of VR usage based on the monthly average of the daily peak values of all Steam VR only games.")
+    plt.grid(True)
+    plt.savefig('../images/vrgames_avg_peak_over_time.png', bbox_inches='tight')
+
+
+def change_game_title(games):
+    """Changes game title that are too long to be displayed in the chart"""
+    titles = ["Skyrim VR", "The Walking Dead", "Hot Dogs"]
+    games_list = []
+    for game in games:
+        match = False
+        for title in titles:
+            if title in game[0]:
+                games_list.append((title, game[1], game[2]))
+                match = True
+        if not match:
+            games_list.append((game[0], game[1], game[2]))
+    return games_list
+
+
 def main():
+
+    # database connect
     conn = sqlite3.connect('../database/vr_games_database.db')
+
+    #  Defines the basic layot for all charts
     plt.rcParams['axes.xmargin'] = 0.01
     plt.rcParams['axes.ymargin'] = 0.01
     params = {'legend.fontsize': 'small',
@@ -83,9 +89,11 @@ def main():
               'xtick.labelsize': 'small',
               'ytick.labelsize': 'small'}
     pylab.rcParams.update(params)
+
     peak_players_online(conn)
     top10_2020(conn)
-    plt.show()
+
+    plt.show()  # Displays the charts
     print("The images were successfully saved in the images folder.")
 
 
