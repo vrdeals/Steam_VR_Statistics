@@ -67,7 +67,7 @@ def main():
     print("The data is determined via web crawling which can take several minutes.")
     if games:
         player_numbers = []
-        progressbar = tqdm(total=len(games))
+        progressbar = tqdm(total=len(games))    # Displays a progress bar
         for game in games:
             appid = game[0]
             players = get_vrgames_players(appid)
