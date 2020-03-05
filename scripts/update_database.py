@@ -17,6 +17,7 @@ def get_vrgames_vrlfg():
     for item in json_data:
         if item["VROnly"] == 1 and item["Overlay"] == 0:
             games.append((item['gameid'], item["Name"]))
+
     return games
 
 
@@ -33,25 +34,23 @@ def get_vrgames_players(appid):
         "Connection": "keep-alive",
         "Accept-Charset": "ISO-8859-1,utf-8;q=0.7,*;q=0.3"
     }
-    try:
-        json_data = json.loads(requests.get(url, headers=headers).text)
-        success = json_data["success"]
-        if success:
-            time_stamp = int(json_data["data"]["start"])
-            step = int(json_data["data"]["step"])
-            players_list = json_data["data"]["values"]
-            if players_list:
-                for players_number in players_list:
-                    if players_number is not None and players_number > 0:
-                        date = datetime.datetime.utcfromtimestamp(time_stamp).strftime('%Y-%m-%d')
-                        players.append((appid, date, players_number))
-                    time_stamp += step
-        if not players:
-            players = ""
-        return players
-    except ValueError:
-        time.sleep(2)   # The website prevents fast web crawling, therefore the waiting time.
-        get_vrgames_players(appid)
+    json_data = json.loads(requests.get(url, headers=headers).text)
+    success = json_data["success"]
+    if success:
+        time_stamp = int(json_data["data"]["start"])
+        step = int(json_data["data"]["step"])
+        players_list = json_data["data"]["values"]
+        if players_list:
+            for players_number in players_list:
+                if players_number is not None and players_number > 0:
+                    date = datetime.datetime.utcfromtimestamp(time_stamp).strftime('%Y-%m-%d')
+                    players.append((appid, date, players_number))
+                time_stamp += step
+    else:
+        if "Please do not crawl" in json_data["error"]:
+            time.sleep(10)   # The website prevents fast web crawling, therefore the waiting time.
+            get_vrgames_players(appid)
+    return players
 
 
 def main():
@@ -73,10 +72,10 @@ def main():
         for game in games:
             appid = game[0]
             players = get_vrgames_players(appid)
-            if players is not None:
+            if players is not None and players:
                 player_numbers.extend(players)
             progressbar.update(1)
-            time.sleep(0.3)  # The website prevents fast web crawling, therefore the waiting time.
+            time.sleep(1)  # The website prevents fast web crawling, therefore the waiting time.
         progressbar.close()
         sqlite_query.reset(conn)
         sqlite_query.add_game(conn, games)
