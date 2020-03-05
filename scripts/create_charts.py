@@ -21,7 +21,7 @@ def top10_2020(conn):
     f, ax = plt.subplots()
     ax.xaxis.set_major_locator(MultipleLocator(250))
 
-    # crashes = sns.load_dataset("car_crashes").sort_values("total", ascending=False)
+    # Creates a Panda data frame with the data from the sqlite database
     top10 = pd.DataFrame(games, columns=['game', 'max_players', 'avg_players'])
 
     # Plot the maximum number of players
