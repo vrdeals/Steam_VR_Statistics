@@ -48,12 +48,12 @@ def peak_players_online(conn):
     """Creates a chart of the 10 most used VR games since 2020"""
     data = sqlite_query.peak_players_online(conn)
     dates = []
-    values = []
+    players = []
     for item in data:
         dates.append(parser.parse(item[0]))
-        values.append(item[1])
+        players.append(item[1])
     style.use('seaborn-dark')
-    plt.plot_date(dates, values, '-')
+    plt.plot_date(dates, players, '-')
     plt.title("Progress of VR usage based on the monthly average of the daily peak values of all Steam VR only games.")
     plt.grid(True)
     plt.savefig('../images/vrgames_avg_peak_over_time.png', bbox_inches='tight')
@@ -75,6 +75,7 @@ def change_game_title(games):
 
 
 def main():
+    print("The charts are created which can take a few seconds.")
 
     # database connect
     conn = sqlite3.connect('../database/vr_games_database.db')
@@ -94,7 +95,7 @@ def main():
     top10_2020(conn)
 
     plt.show()  # Displays the charts
-    print("The images were successfully saved in the images folder.")
+    print("The charts were successfully saved in the images folder.")
 
 
 if __name__ == "__main__":
