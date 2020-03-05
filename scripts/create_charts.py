@@ -40,7 +40,7 @@ def top10_2020(conn):
     ax.legend(ncol=2, loc="lower right", frameon=False)
     sns.despine(left=True, bottom=True)
 
-    # save plot
+    # save the plot and cuts off the edges
     plt.savefig('../images/vrgames_top10_2020.png', bbox_inches='tight')
 
 
