@@ -21,7 +21,7 @@ def get_vrgames_vrlfg():
 def get_vrgames_players(appid):
     """Get the number of players of a game for each day since release"""
     players = []
-    url = 'https://steamdb.info/api/GetGraph/?type=concurrent_max&appid={}'.format(appid)
+    url = f'https://steamdb.info/api/GetGraph/?type=concurrent_max&appid={appid}'
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) "
                       "Chrome/30.0.1599.101 Safari/537.36",

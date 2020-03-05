@@ -78,7 +78,7 @@ def change_game_title(games):
 
 
 def main():
-    print("The charts are created which can take a few seconds.")
+    print("The charts will be created which can take a few seconds.")
 
     # database connect
     conn = sqlite3.connect('../database/vr_games_database.db')

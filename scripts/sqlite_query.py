@@ -61,15 +61,15 @@ def peak_players_online(conn):
 
 def peak_players_appid(conn, val):
     c = conn.cursor()
-    c.execute('''
+    c.execute(f'''
     select Date, avg(Number) as maxnumber from (
     SELECT strftime('%Y-%m', date) as Date, sum(players) as Number FROM vr_players
-    where appid = {} and date != '2019-07-24'
+    where appid = {val} and date != '2019-07-24'
     GROUP by date
     ORDER by Number desc)
     GROUP by Date
     Order by Date
-    '''.format(val))
+    ''')
     return c.fetchall()
 
 
