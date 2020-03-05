@@ -8,40 +8,6 @@ import sqlite3
 from scripts import sqlite_query
 
 
-def get_vrgames_steam():
-    """Get the appid and name of all steam VR games with a vr only tag, sorted by release date(desc).
-    This function is optional, currently I get the appid's and names from the get_vrgames_vrlfg function
-    """
-    infinite_scrolling = 0
-    counter = 0
-    total_count = 0
-    progressbar = 0
-    games = []
-    while True:
-        url = 'https://store.steampowered.com/search/results/?query&start={}&count=50&dynamic_data=&sort_by=Released_' \
-              'DESC&force_infinite=1&vrsupport=401&snr=1_7_7_230_7&infinite=1'.format(infinite_scrolling)
-        json_data = json.loads(requests.get(url).text)
-        if json_data["results_html"] != "\r\n<!-- List Items -->\r\n<!-- End List Items -->\r\n":
-            if total_count == 0:
-                total_count = json_data["total_count"]
-                progressbar = tqdm(total=total_count)
-                progressbar.set_description("Get VR Games")
-            tree = html.fromstring(json_data["results_html"])
-            appid_list = tree.xpath('//a/@data-ds-appid')
-            game_list = tree.xpath('//span[@class="title"]/text()')
-            for appid, game in zip(appid_list, game_list):
-                counter += 1
-                games.append((appid, game))
-                progressbar.update(1)
-                progressbar.refresh()
-            infinite_scrolling += 50
-        else:
-            progressbar.refresh()
-            progressbar.close()
-            print(url)
-            return games
-
-
 def get_vrgames_vrlfg():
     """Get the appid and name of all steam VR games with a VROnly tag and without a Overlay tag"""
     games = []
