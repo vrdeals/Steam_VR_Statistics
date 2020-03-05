@@ -1,10 +1,11 @@
+"""The following external libraries must be installed: Requests, tqdm"""
 import json
 import datetime
 import time
 import sqlite3
 import requests
 from tqdm import tqdm
-from scripts import sqlite_query
+import sqlite_query
 
 
 def get_vrgames_vrlfg():
