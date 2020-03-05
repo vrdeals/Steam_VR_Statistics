@@ -45,10 +45,9 @@ def get_vrgames_players(appid):
                     date = datetime.datetime.utcfromtimestamp(time_stamp).strftime('%Y-%m-%d')
                     players.append((appid, date, players_number))
                 time_stamp += step
-    else:
-        if "Please do not crawl" in json_data["error"]:
-            time.sleep(120)   # The website prevents fast web crawling, therefore the waiting time.
-            get_vrgames_players(appid)
+    elif "Please do not crawl" in json_data["error"]:
+        time.sleep(120)   # The website prevents fast web crawling, therefore the waiting time.
+        get_vrgames_players(appid)
     return players
 
 
