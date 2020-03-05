@@ -12,7 +12,7 @@ from scripts import sqlite_query
 def top10_2020(conn):
     """Creates a chart of the 10 most used VR games since 2020"""
 
-    # Fetches the data from the sql database and changes the title length to be displayed in the chart
+    # Fetches the data from the sqlite database and changes the title length to be displayed in the chart
     games = sqlite_query.top10(conn)
     games = change_game_title(games)
 
