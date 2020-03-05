@@ -67,13 +67,14 @@ def change_game_title(games):
     shortened_title_names = ["Skyrim VR", "The Walking Dead", "Hot Dogs"]
     games_list = []
     for game in games:
+        game_title, max_players, avg_players = game
         match = False
         for title in shortened_title_names:
-            if title in game[0]:
-                games_list.append((title, game[1], game[2]))
+            if title in game_title:
+                games_list.append((title, max_players, avg_players))
                 match = True
         if not match:
-            games_list.append((game[0], game[1], game[2]))
+            games_list.append((game_title, max_players, avg_players))
     return games_list
 
 
@@ -83,7 +84,7 @@ def main():
     # database connect
     conn = sqlite3.connect('../database/vr_games_database.db')
 
-    #  Defines the basic layot for all charts
+    #  Defines the basic layout for all charts
     plt.rcParams['axes.xmargin'] = 0.01
     plt.rcParams['axes.ymargin'] = 0.01
     params = {'legend.fontsize': 'small',
