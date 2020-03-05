@@ -59,7 +59,7 @@ def main():
     Determines all Steam VR only games and the number of players.
     The required information is obtained from https://steamdb.info (number of daily players) and
     www.vrlfg.net (appid of all VR games) using the Requests and JSON library.
-    The information is stored in a SQLite database
+    The information is then stored in an SQLite database.
     """
 
     print("The database will be updated.")
