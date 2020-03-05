@@ -11,13 +11,6 @@ from scripts import sqlite_query
 
 
 def peak_players_online(conn):
-    params = {'legend.fontsize': 'small',
-              'figure.figsize': (15, 5),
-              'axes.labelsize': 'small',
-              'axes.titlesize': 'medium',
-              'xtick.labelsize': 'small',
-              'ytick.labelsize': 'small'}
-    pylab.rcParams.update(params)
     data = sqlite_query.peak_players_online(conn)
     dates = []
     values = []
@@ -25,7 +18,7 @@ def peak_players_online(conn):
         dates.append(parser.parse(item[0]))
         values.append(item[1])
     style.use('seaborn-dark')
-    plt.figure(figsize=(9, 5))
+    # plt.figure(figsize=(9, 5))
     plt.plot_date(dates, values, '-')
     plt.title("Progress of VR usage based on the monthly average of the daily peak values of all Steam VR only games.")
     plt.grid(True)
@@ -54,7 +47,7 @@ def top10_2020(conn):
     sns.set(font_scale=0.7)
 
     # Initialize the matplotlib figure
-    f, ax = plt.subplots(figsize=(9, 5))
+    f, ax = plt.subplots()
     ax.xaxis.set_major_locator(MultipleLocator(250))
 
     # crashes = sns.load_dataset("car_crashes").sort_values("total", ascending=False)
@@ -84,6 +77,13 @@ def main():
     conn = sqlite3.connect('../database/vr_games_database.db')
     plt.rcParams['axes.xmargin'] = 0.01
     plt.rcParams['axes.ymargin'] = 0.01
+    params = {'legend.fontsize': 'small',
+              'figure.figsize': (9, 5),
+              'axes.labelsize': 'small',
+              'axes.titlesize': 'medium',
+              'xtick.labelsize': 'small',
+              'ytick.labelsize': 'small'}
+    pylab.rcParams.update(params)
     peak_players_online(conn)
     top10_2020(conn)
     plt.show()
