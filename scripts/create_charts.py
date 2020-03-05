@@ -84,7 +84,7 @@ def change_game_title(games):
 
 
 def main():
-    """Generates Charts with the Matplotlib and Seaborn Libraries"""
+    """Generates Charts with the Matplotlib and Seaborn libraries"""
 
     print("The charts will be created which can take a few seconds.")
 
