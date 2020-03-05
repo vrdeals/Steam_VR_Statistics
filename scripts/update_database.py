@@ -47,7 +47,7 @@ def get_vrgames_players(appid):
                 time_stamp += step
     else:
         if "Please do not crawl" in json_data["error"]:
-            time.sleep(10)   # The website prevents fast web crawling, therefore the waiting time.
+            time.sleep(120)   # The website prevents fast web crawling, therefore the waiting time.
             get_vrgames_players(appid)
     return players
 
@@ -74,7 +74,7 @@ def main():
             if players is not None and players:
                 player_numbers.extend(players)
             progressbar.update(1)
-            time.sleep(1)  # The website prevents fast web crawling, therefore the waiting time.
+            time.sleep(0.3)  # The website prevents fast web crawling, therefore the waiting time.
         progressbar.close()
         sqlite_query.reset(conn)
         sqlite_query.add_game(conn, games)
