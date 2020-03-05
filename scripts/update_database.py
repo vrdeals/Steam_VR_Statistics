@@ -1,9 +1,9 @@
-import requests
 import json
 import datetime
 import time
-from tqdm import tqdm
 import sqlite3
+import requests
+from tqdm import tqdm
 from scripts import sqlite_query
 
 
@@ -47,12 +47,12 @@ def get_vrgames_players(appid):
             players = ""
         return players
     except ValueError:
-        """The website prevents web crawling, so the program waits 2 seconds before retrieving further data."""
-        time.sleep(2)
+        time.sleep(2)   # The website prevents fast web crawling, therefore the waiting time.
         get_vrgames_players(appid)
 
 
 def main():
+    """Main Function"""
     print("The database will be updated.")
     conn = sqlite3.connect('../database/vr_games_database.db')
     sqlite_query.create_database(conn)
@@ -67,7 +67,7 @@ def main():
             if players is not None:
                 player_numbers.extend(players)
             progressbar.update(1)
-            time.sleep(0.3)  # The website prevents fast web crawling, wait 0.3 seconds before retrieving further data.
+            time.sleep(0.3)  # The website prevents fast web crawling, therefore the waiting time.
         progressbar.close()
         sqlite_query.reset(conn)
         sqlite_query.add_game(conn, games)
