@@ -10,6 +10,7 @@ import sqlite_query
 
 def get_vrgames_vrlfg():
     """Get the appid and name of all steam VR games with a VROnly tag and without a Overlay tag"""
+
     games = []
     url = "https://www.vrlfg.net/api/games"
     json_data = json.loads(requests.get(url).text)
@@ -21,6 +22,7 @@ def get_vrgames_vrlfg():
 
 def get_vrgames_players(appid):
     """Get the number of players of a game for each day since release"""
+
     players = []
     url = f'https://steamdb.info/api/GetGraph/?type=concurrent_max&appid={appid}'
     headers = {

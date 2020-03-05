@@ -1,19 +1,20 @@
-import matplotlib.pyplot as plt
+"""The following external libraries must be installed: matplotlib, seaborn, pandas"""
+import sqlite3
 from matplotlib.ticker import MultipleLocator
 from dateutil import parser
-from matplotlib import style
-import matplotlib.pylab as pylab
+from matplotlib import pyplot as plt, style, pylab as pylab
 import seaborn as sns
 import pandas as pd
-import sqlite3
-from scripts import sqlite_query
+import sqlite_query
 
 
 def top10_2020(conn):
     """Creates a chart of the 10 most used VR games since 2020"""
 
-    # Fetches the data from the sqlite database and changes the title length to be displayed in the chart
+    # Fetches the data from the sqlite database
     games = sqlite_query.top10(conn)
+
+    # changes the title length
     games = change_game_title(games)
 
     # Defines the used graphic style and reduces the text size to fit all information on the chart
@@ -21,15 +22,16 @@ def top10_2020(conn):
     sns.set(font_scale=0.7)
 
     # Initialize the matplotlib figure
-    f, ax = plt.subplots()
-    ax.xaxis.set_major_locator(MultipleLocator(250))
+    fig, axis = plt.subplots()
+    axis.xaxis.set_major_locator(MultipleLocator(250))
 
     # Creates a Panda data frame with the data from the sqlite database
     top10 = pd.DataFrame(games, columns=['game', 'max_players', 'avg_players'])
 
     # Plot the maximum number of players
     sns.set_color_codes("pastel")
-    sns.barplot(x="max_players", y="game", data=top10, label="The maximum number of players (highest peak)", color="b")
+    sns.barplot(x="max_players", y="game", data=top10,
+                label="The maximum number of players (highest peak)", color="b")
 
     # Plot the average number of players
     sns.set_color_codes("muted")
@@ -40,7 +42,7 @@ def top10_2020(conn):
     fig.set_ylabel("")
 
     # Add a legend and informative axis label
-    ax.legend(ncol=2, loc="lower right", frameon=False)
+    axis.legend(ncol=2, loc="lower right", frameon=False)
     sns.despine(left=True, bottom=True)
 
     # save the plot and cuts off the edges
@@ -49,6 +51,7 @@ def top10_2020(conn):
 
 def peak_players_online(conn):
     """Creates a chart which shows the use of VR since 2016"""
+
     data = sqlite_query.peak_players_online(conn)
     dates = []
     players = []
@@ -57,13 +60,15 @@ def peak_players_online(conn):
         players.append(item[1])
     style.use('seaborn-dark')
     plt.plot_date(dates, players, '-')
-    plt.title("Progress of VR usage based on the monthly average of the daily peak values of all Steam VR only games.")
+    plt.title("Progress of VR usage based on the monthly average of the daily peak values "
+              "of all Steam VR only games.")
     plt.grid(True)
     plt.savefig('../images/vrgames_avg_peak_over_time.png', bbox_inches='tight')
 
 
 def change_game_title(games):
     """Changes game title that are too long to be displayed in the chart"""
+
     shortened_title_names = ["Skyrim VR", "The Walking Dead", "Hot Dogs"]
     games_list = []
     for game in games:
@@ -79,6 +84,8 @@ def change_game_title(games):
 
 
 def main():
+    """Generates Charts with the Matplotlib and Seaborn Libraries"""
+
     print("The charts will be created which can take a few seconds.")
 
     # database connect
