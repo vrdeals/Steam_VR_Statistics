@@ -60,7 +60,7 @@ def top10_2020(conn):
     # Plot the average number of players
     sns.set_color_codes("muted")
     fig = sns.barplot(x="avg_players", y="game", data=top10,
-                      label="The average number of daily players (avg peak per day)", color="b")
+                      label="The average number of daily players", color="b")
     fig.axes.set_title("The most played Steam VR games since 2020", fontsize=10)
     fig.set_xlabel("")
     fig.set_ylabel("")
