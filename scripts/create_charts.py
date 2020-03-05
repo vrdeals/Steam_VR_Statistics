@@ -48,7 +48,7 @@ def top10_2020(conn):
 
 
 def peak_players_online(conn):
-    """Creates a chart of the 10 most used VR games since 2020"""
+    """Creates a chart which shows the use of VR since 2016"""
     data = sqlite_query.peak_players_online(conn)
     dates = []
     players = []
