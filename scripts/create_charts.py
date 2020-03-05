@@ -5,7 +5,6 @@ from matplotlib import style
 import matplotlib.pylab as pylab
 import seaborn as sns
 import pandas as pd
-import numpy as np
 import sqlite3
 from scripts import sqlite_query
 

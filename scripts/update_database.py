@@ -9,7 +9,9 @@ from scripts import sqlite_query
 
 
 def get_vrgames_steam():
-    """Get the appid and name of all steam VR games with a vr only tag, sorted by release date(desc)"""
+    """Get the appid and name of all steam VR games with a vr only tag, sorted by release date(desc).
+    This function is optional, currently I get the appid's and names from the get_vrgames_vrlfg function
+    """
     infinite_scrolling = 0
     counter = 0
     total_count = 0
