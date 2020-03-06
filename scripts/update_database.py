@@ -5,12 +5,34 @@ import time
 import sqlite3
 import requests
 from tqdm import tqdm
-import sqlite_query
+
+
+def create_database(cursor):
+    """Creates the tables of the database"""
+    cursor.execute('''CREATE TABLE IF NOT EXISTS vr_games
+     (appid integer NOT NULL, title text NOT NULL)''')
+    cursor.execute('''CREATE TABLE IF NOT EXISTS vr_players
+     (appid integer NOT NULL, date text NOT NULL, players integer)''')
+
+
+def add_game(cursor, val):
+    """Adds games to the database"""
+    cursor.executemany('INSERT INTO vr_games(appid,title) VALUES (?,?)', val)
+
+
+def add_players(cursor, val):
+    """Adds players to the database"""
+    cursor.executemany('''INSERT INTO vr_players(appid,date,players) VALUES(?,?,?)''', val)
+
+
+def reset(cursor):
+    """Deletes the contents of the tables"""
+    cursor.execute('DELETE FROM vr_games;')
+    cursor.execute('DELETE FROM vr_players;')
 
 
 def get_vrgames_vrlfg():
     """Get the appid and name of all steam VR games with a VROnly tag and without a Overlay tag"""
-
     games = []
     url = "https://www.vrlfg.net/api/games"
     json_data = json.loads(requests.get(url).text)
@@ -22,7 +44,6 @@ def get_vrgames_vrlfg():
 
 def get_vrgames_players(appid):
     """Get the number of players of a game for each day since release"""
-
     players = []
     url = f'https://steamdb.info/api/GetGraph/?type=concurrent_max&appid={appid}'
     headers = {
@@ -59,10 +80,10 @@ def main():
     www.vrlfg.net (appid of all VR games) using the Requests and JSON library.
     The information is then stored in an SQLite database.
     """
-
     print("The database will be updated.")
     conn = sqlite3.connect('../database/vr_games_database.db')
-    sqlite_query.create_database(conn)
+    cursor = conn.cursor()
+    create_database(cursor)
     games = get_vrgames_vrlfg()
     print("The data is determined via web crawling which can take a long time.")
     if games:
@@ -76,9 +97,10 @@ def main():
             progressbar.update(1)
             time.sleep(0.3)  # The website prevents fast web crawling, therefore the waiting time.
         progressbar.close()
-        sqlite_query.reset(conn)
-        sqlite_query.add_game(conn, games)
-        sqlite_query.add_players(conn, player_numbers)
+        reset(cursor)
+        add_game(cursor, games)
+        add_players(cursor, player_numbers)
+        conn.commit()
         print("The database was successfully updated.")
     conn.close()
 

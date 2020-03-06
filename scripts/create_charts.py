@@ -5,14 +5,39 @@ from matplotlib import pyplot as plt, style, pylab as pylab
 from matplotlib.ticker import MultipleLocator
 import seaborn as sns
 import pandas as pd
-import sqlite_query
+
+
+def top10_sql(cursor):
+    """Determines the 10 most played VR games since 2020 and returns them as a list"""
+    cursor.execute('''
+    SELECT title, max(players) as Maxplayers, round(avg(players)) as Average from vr_players
+    INNER JOIN vr_games ON vr_games.appid = vr_players.appid
+    WHERE date >= '2020-01'
+    Group by vr_players.appid
+    Order by Maxplayers DESC
+    Limit 10
+    ''')
+    return cursor.fetchall()
+
+
+def peak_players_online_sql(cursor):
+    """Determines the monthly average of the daily peak values since 2016-03-01"""
+    cursor.execute('''
+    select Date, avg(Number) as maxnumber from (
+    SELECT strftime('%Y-%m', date) as Date, sum(players) as Number FROM vr_players
+    WHERE date != '2019-07-24' and date > '2016-03-01'
+    GROUP by date)
+    GROUP by Date
+    Order by Date
+    ''')
+    return cursor.fetchall()
 
 
 def top10_2020(conn):
     """Creates a chart of the 10 most used VR games since 2020 with the seaborn library"""
 
     # Fetches the data from the sqlite database
-    games = sqlite_query.top10(conn)
+    games = top10_sql(conn)
 
     # changes the title length
     games = change_game_title(games)
@@ -52,7 +77,7 @@ def top10_2020(conn):
 def peak_players_online(conn):
     """Creates a chart which shows the use of VR since 2016 with the matplotlib library"""
 
-    data = sqlite_query.peak_players_online(conn)
+    data = peak_players_online_sql(conn)
     dates = []
     players = []
     for item in data:
@@ -84,11 +109,10 @@ def change_game_title(games):
 
 def main():
     """Generates Charts with the Matplotlib and Seaborn libraries"""
-
     print("The charts will be created which can take a few seconds.")
 
-    # database connect
-    conn = sqlite3.connect('../database/vr_games_database.db')
+    conn = sqlite3.connect('../database/vr_games_database.db')  # database connect
+    cursor = conn.cursor()
 
     #  Defines the basic layout for all charts
     plt.rcParams['axes.xmargin'] = 0.01
@@ -101,12 +125,11 @@ def main():
               'ytick.labelsize': 'small'}
     pylab.rcParams.update(params)
 
-    # Creates the charts
-    peak_players_online(conn)
-    top10_2020(conn)
+    peak_players_online(cursor)
+    top10_2020(cursor)
 
-    # Displays the charts
-    plt.show()
+    conn.close()
+    plt.show()      # Displays the charts
 
     print("The charts were successfully saved in the images folder.")
 
