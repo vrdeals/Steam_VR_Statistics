@@ -113,7 +113,7 @@ def main():
                 if players is not None and players:
                     player_numbers.extend(players)
                 progressbar.update(1)
-                time.sleep(0.3)  # The website prevents fast web crawling, therefore the waiting time.
+                time.sleep(0.3)  # website prevents fast web crawling, therefore the waiting time
             progressbar.close()
             reset(cursor)
             add_game(cursor, games)
