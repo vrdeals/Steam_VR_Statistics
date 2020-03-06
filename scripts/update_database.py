@@ -46,6 +46,7 @@ def get_vrgames_players(appid):
                     players.append((appid, date, players_number))
                 time_stamp += step
     elif "Please do not crawl" in json_data["error"]:
+        tqdm.write("The program is waiting 120 seconds because the website prevents web crawling")
         time.sleep(120)   # The website prevents fast web crawling, therefore the waiting time.
         get_vrgames_players(appid)
     return players
@@ -63,7 +64,7 @@ def main():
     conn = sqlite3.connect('../database/vr_games_database.db')
     sqlite_query.create_database(conn)
     games = get_vrgames_vrlfg()
-    print("The data is determined via web crawling which can take several minutes.")
+    print("The data is determined via web crawling which can take a long time.")
     if games:
         player_numbers = []
         progressbar = tqdm(total=len(games))    # Displays a progress bar
