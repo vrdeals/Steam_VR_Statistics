@@ -31,7 +31,7 @@ def top10_2020(conn):
     # Plot the maximum number of players
     sns.set_color_codes("pastel")
     sns.barplot(x="max_players", y="game", data=top10,
-                label="The maximum daily peak", color="b")
+                label="The maximum peak value achieved since 2020", color="b")
 
     # Plot the average number of players
     sns.set_color_codes("muted")
