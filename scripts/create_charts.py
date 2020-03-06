@@ -9,7 +9,7 @@ import sqlite_query
 
 
 def top10_2020(conn):
-    """Creates a chart of the 10 most used VR games since 2020"""
+    """Creates a chart of the 10 most used VR games since 2020 with the seaborn library"""
 
     # Fetches the data from the sqlite database
     games = sqlite_query.top10(conn)
@@ -50,7 +50,7 @@ def top10_2020(conn):
 
 
 def peak_players_online(conn):
-    """Creates a chart which shows the use of VR since 2016"""
+    """Creates a chart which shows the use of VR since 2016 with the matplotlib library"""
 
     data = sqlite_query.peak_players_online(conn)
     dates = []
