@@ -111,7 +111,7 @@ def main():
     """Generates Charts with the Matplotlib and Seaborn libraries"""
     print("The charts will be created which can take a few seconds.")
 
-    conn = sqlite3.connect('../database/vr_games_database.db')  # database connect
+    conn = sqlite3.connect('../database/vr_games_database.db')
     cursor = conn.cursor()
 
     #  Defines the basic layout for all charts
@@ -129,7 +129,7 @@ def main():
     top10_2020(cursor)
 
     conn.close()
-    plt.show()      # Displays the charts
+    plt.show()          # Displays the charts
 
     print("The charts were successfully saved in the images folder.")
 
