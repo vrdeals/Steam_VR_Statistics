@@ -23,7 +23,8 @@ def top10_sql(cursor):
 def peak_players_online_sql(cursor):
     """Determines the monthly average of the daily peak values since 2016-03-01"""
     cursor.execute('''
-    Select new_date, sum(average) from (SELECT strftime('%Y-%m', date) as new_date, avg(players) as average from vr_players
+    Select new_date, sum(average) from (SELECT strftime('%Y-%m', date) as new_date, 
+    avg(players) as average from vr_players
     WHERE date != '2019-07-24' and date > '2016-03'
     Group by appid, new_date
     Order by new_date)
