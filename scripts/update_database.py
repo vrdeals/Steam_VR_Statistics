@@ -24,7 +24,8 @@ def add_game(val):
 
 def add_players(val):
     """Adds players to the database"""
-    c.executemany('''INSERT INTO vr_players(appid,date,players) VALUES(?,?,?)''', val)
+    with conn:
+        c.executemany('''INSERT INTO vr_players(appid,date,players) VALUES(?,?,?)''', val)
 
 
 def reset():
@@ -120,7 +121,6 @@ def main():
             reset()
             add_game(games)
             add_players(player_numbers)
-            conn.commit()
             print("The database was successfully updated.")
     else:
         print("The database is up-to-date, no update is required.")
