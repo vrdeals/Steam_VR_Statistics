@@ -101,7 +101,6 @@ def main():
     www.vrlfg.net (appid of all VR games) using the Requests and JSON library.
     The information is then stored in an SQLite database.
     """
-
     create_database()
     if update_required():
         print("The database will be updated.")
