@@ -28,7 +28,7 @@ def peak_players_online_sql(cursor):
     WHERE date != '2019-07-24' and date > '2016-03'
     Group by appid, new_date
     Order by new_date)
-    where average > 3
+    where average > 1
     Group by new_date
     ''')
     return cursor.fetchall()
