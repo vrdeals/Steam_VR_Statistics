@@ -56,7 +56,7 @@ def peak_players_online(conn):
     dates = []
     players = []
     for item in data:
-        dates.append(parser.parse(item[0]))
+        dates.append(parser.parse(item[0]))     # formatting string into date
         players.append(item[1])
     style.use('seaborn-dark')
     plt.plot_date(dates, players, '-')
