@@ -7,28 +7,31 @@ import requests
 from tqdm import tqdm
 
 
-def create_database(cursor):
+def create_database():
     """Creates the tables of the database"""
-    cursor.execute('''CREATE TABLE IF NOT EXISTS vr_games
-     (appid integer NOT NULL, title text NOT NULL)''')
-    cursor.execute('''CREATE TABLE IF NOT EXISTS vr_players
-     (appid integer NOT NULL, date text NOT NULL, players integer)''')
+    with conn:
+        c.execute('''CREATE TABLE IF NOT EXISTS vr_games
+         (appid integer NOT NULL, title text NOT NULL)''')
+        c.execute('''CREATE TABLE IF NOT EXISTS vr_players
+         (appid integer NOT NULL, date text NOT NULL, players integer)''')
 
 
-def add_game(cursor, val):
+def add_game(val):
     """Adds games to the database"""
-    cursor.executemany('INSERT INTO vr_games(appid,title) VALUES (?,?)', val)
+    with conn:
+        c.executemany('INSERT INTO vr_games(appid,title) VALUES (?,?)', val)
 
 
-def add_players(cursor, val):
+def add_players(val):
     """Adds players to the database"""
-    cursor.executemany('''INSERT INTO vr_players(appid,date,players) VALUES(?,?,?)''', val)
+    c.executemany('''INSERT INTO vr_players(appid,date,players) VALUES(?,?,?)''', val)
 
 
-def reset(cursor):
+def reset():
     """Deletes the contents of the tables"""
-    cursor.execute('DELETE FROM vr_games;')
-    cursor.execute('DELETE FROM vr_players;')
+    with conn:
+        c.execute('DELETE FROM vr_games;')
+        c.execute('DELETE FROM vr_players;')
 
 
 def get_vrgames_vrlfg():
@@ -73,15 +76,15 @@ def get_vrgames_players(appid):
     return players
 
 
-def update_required(cursor):
+def update_required():
     """checks if more than 1 month has passed since the last update"""
     update = False
     today = datetime.date.today()
     update_cycle = today.replace(day=1) - datetime.timedelta(days=20)
     update_cycle = update_cycle.strftime("%Y-%m-%d")
     # fetches the date of last update
-    cursor.execute('SELECT max(date) FROM vr_players')
-    last_update = cursor.fetchone()[0]
+    c.execute('SELECT max(date) FROM vr_players')
+    last_update = c.fetchone()[0]
     if last_update is None:
         update = True
     else:
@@ -97,10 +100,9 @@ def main():
     www.vrlfg.net (appid of all VR games) using the Requests and JSON library.
     The information is then stored in an SQLite database.
     """
-    conn = sqlite3.connect('../database/vr_games_database.db')
-    cursor = conn.cursor()
-    create_database(cursor)
-    if update_required(cursor):
+
+    create_database()
+    if update_required():
         print("The database will be updated.")
         games = get_vrgames_vrlfg()
         print("The data is determined via web crawling which can take a long time.")
@@ -115,9 +117,9 @@ def main():
                 progressbar.update(1)
                 time.sleep(0.3)  # website prevents fast web crawling, therefore the waiting time
             progressbar.close()
-            reset(cursor)
-            add_game(cursor, games)
-            add_players(cursor, player_numbers)
+            reset()
+            add_game(games)
+            add_players(player_numbers)
             conn.commit()
             print("The database was successfully updated.")
     else:
@@ -126,4 +128,6 @@ def main():
 
 
 if __name__ == "__main__":
+    conn = sqlite3.connect('../database/vr_games_database.db')
+    c = conn.cursor()
     main()

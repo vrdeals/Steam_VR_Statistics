@@ -7,9 +7,9 @@ import seaborn as sns
 import pandas as pd
 
 
-def top10_sql(cursor):
+def top10_sql():
     """Determines the 10 most played VR games since 2020 and returns them as a list"""
-    cursor.execute('''
+    c.execute('''
     SELECT title, max(players) as Maxplayers, round(avg(players)) as Average from vr_players
     INNER JOIN vr_games ON vr_games.appid = vr_players.appid
     WHERE date >= '2020-01'
@@ -17,12 +17,12 @@ def top10_sql(cursor):
     Order by Maxplayers DESC
     Limit 10
     ''')
-    return cursor.fetchall()
+    return c.fetchall()
 
 
-def peak_players_online_sql(cursor):
+def peak_players_online_sql():
     """Determines the monthly average of the daily peak values since 2016-03-01"""
-    cursor.execute('''
+    c.execute('''
     Select new_date, sum(average) from (SELECT strftime('%Y-%m', date) as new_date, 
     sum(players)/(julianday(date,'start of month','+1 month') - julianday(date,'start of month')) 
     as average from vr_players
@@ -32,14 +32,14 @@ def peak_players_online_sql(cursor):
     where average >= 1
     Group by new_date
     ''')
-    return cursor.fetchall()
+    return c.fetchall()
 
 
-def top10_2020(conn):
+def top10_2020():
     """Creates a chart of the 10 most used VR games since 2020 with the seaborn library"""
 
     # Fetches the data from the sqlite database
-    games = top10_sql(conn)
+    games = top10_sql()
 
     # changes the title length
     games = change_game_title(games)
@@ -76,10 +76,10 @@ def top10_2020(conn):
     plt.savefig('../images/vrgames_top10_2020.png', bbox_inches='tight')
 
 
-def peak_players_online(conn):
+def peak_players_online():
     """Creates a chart which shows the use of VR since 2016 with the matplotlib library"""
 
-    data = peak_players_online_sql(conn)
+    data = peak_players_online_sql()
     dates = []
     players = []
     for item in data:
@@ -113,9 +113,6 @@ def main():
     """Generates Charts with the Matplotlib and Seaborn libraries"""
     print("The charts will be created which can take a few seconds.")
 
-    conn = sqlite3.connect('../database/vr_games_database.db')
-    cursor = conn.cursor()
-
     #  Defines the basic layout for all charts
     plt.rcParams['axes.xmargin'] = 0.01
     plt.rcParams['axes.ymargin'] = 0.01
@@ -127,14 +124,16 @@ def main():
               'ytick.labelsize': 'small'}
     pylab.rcParams.update(params)
 
-    peak_players_online(cursor)
-    top10_2020(cursor)
-
+    peak_players_online()
+    top10_2020()
     conn.close()
-    plt.show()          # Displays the charts
 
+    # Displays the charts
+    plt.show()
     print("The charts were successfully saved in the images folder.")
 
 
 if __name__ == "__main__":
+    conn = sqlite3.connect('../database/vr_games_database.db')
+    c = conn.cursor()
     main()
