@@ -73,12 +73,11 @@ def change_game_title(games):
     games_list = []
     for game in games:
         game_title, max_players, avg_players = game
-        match = False
         for short_title in shortened_title_names:
             if short_title in game_title:
                 games_list.append((short_title, max_players, avg_players))
-                match = True
-        if not match:
+                break
+        else:
             games_list.append((game_title, max_players, avg_players))
     return games_list
 
