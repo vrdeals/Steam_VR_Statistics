@@ -6,6 +6,10 @@ import sqlite3
 import requests
 from tqdm import tqdm
 
+# Database connection
+conn = sqlite3.connect('../database/vr_games_database.db')
+c = conn.cursor()
+
 
 def create_database():
     """Creates the tables of the database"""
@@ -127,6 +131,4 @@ def main():
 
 
 if __name__ == "__main__":
-    conn = sqlite3.connect('../database/vr_games_database.db')
-    c = conn.cursor()
     main()

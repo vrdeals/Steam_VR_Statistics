@@ -6,6 +6,10 @@ from matplotlib.ticker import MultipleLocator
 import seaborn as sns
 import pandas as pd
 
+# Database connection
+conn = sqlite3.connect('../database/vr_games_database.db')
+c = conn.cursor()
+
 
 def top10_sql():
     """Returns the 10 most played VR games since 2020 as a list"""
@@ -134,6 +138,4 @@ def main():
 
 
 if __name__ == "__main__":
-    conn = sqlite3.connect('../database/vr_games_database.db')
-    c = conn.cursor()
     main()
