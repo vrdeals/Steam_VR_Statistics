@@ -39,14 +39,10 @@ def peak_players_online_sql():
     return c.fetchall()
 
 
-def top10_2020():
+def top10_chart(sql_data):
     """Creates a chart of the 10 most used VR games since 2020 with the seaborn library"""
-
-    # Fetches the data from the sqlite database
-    games = top10_sql()
-
     # changes the title length
-    games = change_game_title(games)
+    sql_data = change_game_title(sql_data)
 
     # Defines the used graphic style and reduces the text size to fit all information on the chart
     sns.set_style("whitegrid")
@@ -57,7 +53,7 @@ def top10_2020():
     ax.xaxis.set_major_locator(MultipleLocator(250))
 
     # Creates a Panda data frame with the data from the sqlite database
-    top10 = pd.DataFrame(games, columns=['game', 'max_players', 'avg_players'])
+    top10 = pd.DataFrame(sql_data, columns=['game', 'max_players', 'avg_players'])
 
     # Plot the maximum number of players
     sns.set_color_codes("pastel")
@@ -80,13 +76,11 @@ def top10_2020():
     plt.savefig('../images/vrgames_top10_2020.png', bbox_inches='tight')
 
 
-def peak_players_online():
+def peak_players_chart(sql_data):
     """Creates a chart which shows the use of VR since 2016 with the matplotlib library"""
-
-    data = peak_players_online_sql()
     dates = []
     players = []
-    for item in data:
+    for item in sql_data:
         dates.append(parser.parse(item[0]))     # formatting string into date
         players.append(item[1])
     style.use('seaborn-dark')
@@ -97,12 +91,11 @@ def peak_players_online():
     plt.savefig('../images/vrgames_avg_peak_over_time.png', bbox_inches='tight')
 
 
-def change_game_title(games):
+def change_game_title(sql_data):
     """Changes game title that are too long to be displayed in the chart"""
-
     shortened_title_names = ["Skyrim VR", "The Walking Dead", "Hot Dogs"]
     games_list = []
-    for game in games:
+    for game in sql_data:
         game_title, max_players, avg_players = game
         for short_title in shortened_title_names:
             if short_title in game_title:
@@ -128,8 +121,9 @@ def main():
               'ytick.labelsize': 'small'}
     pylab.rcParams.update(params)
 
-    peak_players_online()
-    top10_2020()
+    # plt.figure(1)
+    peak_players_chart(peak_players_online_sql())
+    top10_chart(top10_sql())
     conn.close()
 
     # Displays the charts
