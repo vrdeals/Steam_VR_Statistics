@@ -49,8 +49,8 @@ def top10_2020():
     sns.set(font_scale=0.7)
 
     # Initialize the matplotlib figure
-    fig, axis = plt.subplots()
-    axis.xaxis.set_major_locator(MultipleLocator(250))
+    fig, ax = plt.subplots()
+    ax.xaxis.set_major_locator(MultipleLocator(250))
 
     # Creates a Panda data frame with the data from the sqlite database
     top10 = pd.DataFrame(games, columns=['game', 'max_players', 'avg_players'])
@@ -69,7 +69,7 @@ def top10_2020():
     fig.set_ylabel("")
 
     # Add a legend and informative axis label
-    axis.legend(ncol=2, loc="lower right", frameon=False)
+    ax.legend(ncol=2, loc="lower right", frameon=False)
     sns.despine(left=True, bottom=True)
 
     # save the plot and cuts off the edges
