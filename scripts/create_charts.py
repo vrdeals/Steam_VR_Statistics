@@ -121,7 +121,7 @@ def main():
               'ytick.labelsize': 'small'}
     pylab.rcParams.update(params)
 
-    # plt.figure(1)
+    # Creates the charts with the data from the sql queries
     peak_players_chart(peak_players_online_sql())
     top10_chart(top10_sql())
     conn.close()
