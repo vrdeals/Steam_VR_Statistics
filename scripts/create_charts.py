@@ -8,7 +8,7 @@ import pandas as pd
 
 
 def top10_sql():
-    """Determines the 10 most played VR games since 2020 and returns them as a list"""
+    """Returns the 10 most played VR games since 2020 as a list"""
     c.execute('''
     SELECT title, max(players) as Maxplayers, round(avg(players)) as Average from vr_players
     INNER JOIN vr_games ON vr_games.appid = vr_players.appid
@@ -21,7 +21,7 @@ def top10_sql():
 
 
 def peak_players_online_sql():
-    """Determines the monthly average of the daily peak values since 2016-03-01"""
+    """Returns the monthly average of the daily peak values since 2016-03 as a list"""
     c.execute('''
     Select new_date, sum(average) from (SELECT strftime('%Y-%m', date) as new_date, 
     sum(players)/(julianday(date,'start of month','+1 month') - julianday(date,'start of month')) 
