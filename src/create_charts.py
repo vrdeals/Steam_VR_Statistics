@@ -136,7 +136,7 @@ def main():
     plt.savefig('../images/vrgames_avg_peak_over_time.png', bbox_inches='tight')
 
     plt.subplots()
-    chart_title = "The maximum number of simultaneous players on Steam"
+    chart_title = "The maximum number of simultaneous players on Steam for Beat Saber, Pavlov and Super Hot VR"
     peak_players_chart(max_peak_players_appid(appid=620980), chart_title, "navy", "Beat Saber")
     peak_players_chart(max_peak_players_appid(appid=555160), chart_title, "orange", "Pavlov")
     peak_players_chart(max_peak_players_appid(appid=617830), chart_title, "red", "Super Hot VR")
