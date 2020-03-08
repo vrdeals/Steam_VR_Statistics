@@ -14,7 +14,7 @@ c = conn.cursor()
 def top10_sql():
     """Returns the 10 most played VR games since 2020 as a list"""
     c.execute('''
-    SELECT title, max(players) as Maxplayers, round(avg(players)) as Average from vr_players
+    SELECT vr_players.appid, title, max(players) as Maxplayers, round(avg(players)) as Average from vr_players
     INNER JOIN vr_games ON vr_games.appid = vr_players.appid
     WHERE date >= '2020-01'
     Group by vr_players.appid
@@ -39,6 +39,16 @@ def peak_players_online_sql():
     return c.fetchall()
 
 
+def peak_players_online_sql2(appid):
+    c.execute(f'''
+    SELECT strftime('%Y-%m', date) as new_date, 
+    max(players) as average from vr_players
+    WHERE appid ="{appid}"  and date > '2018-05' and date != '2019-07-24' and date < date('now','start of month')
+    Group by new_date
+    ''')
+    return c.fetchall()
+
+
 def top10_chart(sql_data):
     """Creates a chart of the 10 most used VR games since 2020 with the seaborn library"""
     # changes the title length
@@ -53,7 +63,7 @@ def top10_chart(sql_data):
     ax.xaxis.set_major_locator(MultipleLocator(250))
 
     # Creates a Panda data frame with the data from the sqlite database
-    top10 = pd.DataFrame(sql_data, columns=['game', 'max_players', 'avg_players'])
+    top10 = pd.DataFrame(sql_data, columns=['appid', 'game', 'max_players', 'avg_players'])
 
     # Plot the maximum number of players
     sns.set_color_codes("pastel")
@@ -72,11 +82,8 @@ def top10_chart(sql_data):
     ax.legend(ncol=2, loc="lower right", frameon=False)
     sns.despine(left=True, bottom=True)
 
-    # save the plot and cuts off the edges
-    plt.savefig('../images/vrgames_top10_2020.png', bbox_inches='tight')
 
-
-def peak_players_chart(sql_data):
+def peak_players_chart(sql_data, chart_title, color="", legend=""):
     """Creates a chart which shows the use of VR since 2016 with the matplotlib library"""
     dates = []
     players = []
@@ -85,10 +92,12 @@ def peak_players_chart(sql_data):
         players.append(item[1])
     style.use('seaborn-dark')
     plt.plot_date(dates, players, '-')
-    plt.title("Progress of VR usage based on the monthly average of the daily peak values "
-              "of all Steam VR only games.")
+    plt.title(chart_title)
+    if legend:
+        plt.plot(dates, players, color, label=legend)
+        # plt.plot(x, y2, "-r", label="cosine")
+        plt.legend(loc="upper left")
     plt.grid(True)
-    plt.savefig('../images/vrgames_avg_peak_over_time.png', bbox_inches='tight')
 
 
 def change_game_title(sql_data):
@@ -96,13 +105,13 @@ def change_game_title(sql_data):
     shortened_title_names = ["Skyrim VR", "The Walking Dead", "Hot Dogs"]
     games_list = []
     for game in sql_data:
-        game_title, max_players, avg_players = game
+        appid, game_title, max_players, avg_players = game
         for short_title in shortened_title_names:
             if short_title in game_title:
-                games_list.append((short_title, max_players, avg_players))
+                games_list.append((appid, short_title, max_players, avg_players))
                 break
         else:
-            games_list.append((game_title, max_players, avg_players))
+            games_list.append((appid, game_title, max_players, avg_players))
     return games_list
 
 
@@ -121,9 +130,18 @@ def main():
               'ytick.labelsize': 'small'}
     pylab.rcParams.update(params)
 
-    # Creates the charts with the data from the sql queries
-    peak_players_chart(peak_players_online_sql())
+    # Creates the charts with the data from the sql queries and saves them
+    chart_title = "Steam VR usage based on the monthly average of the daily peak values"
+    peak_players_chart(peak_players_online_sql(), chart_title)
+    plt.savefig('../images/vrgames_avg_peak_over_time.png', bbox_inches='tight')
+    plt.subplots()
+    chart_title = "The maximum number of simultaneous players on Steam"
+    peak_players_chart(peak_players_online_sql2(appid=620980), chart_title, "navy", "Beat Saber")
+    peak_players_chart(peak_players_online_sql2(appid=555160), chart_title, "orange", "Pavlov")
+    peak_players_chart(peak_players_online_sql2(appid=617830), chart_title, "red", "Super Hot VR")
+    plt.savefig('../images/BeatSaber_Pavlov_SuperHot_peak.png', bbox_inches='tight')
     top10_chart(top10_sql())
+    plt.savefig('../images/vrgames_top10_2020.png', bbox_inches='tight')
     conn.close()
 
     # Displays the charts

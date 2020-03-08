@@ -6,4 +6,7 @@ Determines all Steam VR only games and the number of players. The required infor
 <p align="center">
   <img width="754" height="437" src="https://github.com/Bamux/Steam_VR_Statistics/blob/master/images/vrgames_avg_peak_over_time.png">
 </p>
+<p align="center">
+  <img width="754" height="437" src="https://github.com/Bamux/Steam_VR_Statistics/blob/master/images/BeatSaber_Pavlov_SuperHot_peak.png">
+</p>
 
