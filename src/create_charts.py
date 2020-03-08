@@ -40,6 +40,7 @@ def peak_players_online_sql():
 
 
 def max_peak_players_appid(appid):
+    """Returns the monthly max peak values of a game as a list"""
     c.execute(f'''
     SELECT strftime('%Y-%m', date) as new_date, 
     max(players) as average from vr_players
@@ -134,12 +135,14 @@ def main():
     chart_title = "Steam VR usage based on the monthly average of the daily peak values"
     peak_players_chart(peak_players_online_sql(), chart_title)
     plt.savefig('../images/vrgames_avg_peak_over_time.png', bbox_inches='tight')
+
     plt.subplots()
     chart_title = "The maximum number of simultaneous players on Steam"
     peak_players_chart(max_peak_players_appid(appid=620980), chart_title, "navy", "Beat Saber")
     peak_players_chart(max_peak_players_appid(appid=555160), chart_title, "orange", "Pavlov")
     peak_players_chart(max_peak_players_appid(appid=617830), chart_title, "red", "Super Hot VR")
     plt.savefig('../images/BeatSaber_Pavlov_SuperHot_peak.png', bbox_inches='tight')
+
     top10_chart(top10_sql())
     plt.savefig('../images/vrgames_top10_2020.png', bbox_inches='tight')
     conn.close()
