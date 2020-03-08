@@ -85,7 +85,7 @@ def top10_chart(sql_data):
 
 
 def peak_players_chart(sql_data, chart_title, color="", legend=""):
-    """Creates a chart which shows the use of VR since 2016 with the matplotlib library"""
+    """Creates a chart which shows the peak values with the matplotlib library"""
     dates = []
     players = []
     for item in sql_data:
