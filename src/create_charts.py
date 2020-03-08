@@ -132,7 +132,7 @@ def main():
     pylab.rcParams.update(params)
 
     # Creates the charts with the data from the sql queries and saves them
-    chart_title = "Steam VR usage based on the monthly average of the daily peak values"
+    chart_title = "Steam VR usage of all VR games based on the monthly average of the daily peak values"
     peak_players_chart(peak_players_online_sql(), chart_title)
     plt.savefig('../images/vrgames_avg_peak_over_time.png', bbox_inches='tight')
 
