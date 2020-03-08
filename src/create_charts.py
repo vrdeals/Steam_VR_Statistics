@@ -86,18 +86,18 @@ def top10_chart(sql_data):
 
 def peak_players_chart(sql_data, chart_title, color="", legend=""):
     """Creates a chart which shows the peak values with the matplotlib library"""
-    dates = []
-    players = []
-    for item in sql_data:
-        dates.append(parser.parse(item[0]))     # formatting string into date
-        players.append(item[1])
+    dates_list = []
+    players_list = []
+    for date, players in sql_data:
+        dates_list.append(parser.parse(date))     # formatting string into date
+        players_list.append(players)
     style.use('seaborn-dark')
-    plt.plot_date(dates, players, '-')
     plt.title(chart_title)
     if legend:
-        plt.plot(dates, players, color, label=legend)
-        # plt.plot(x, y2, "-r", label="cosine")
+        plt.plot(dates_list, players_list, color, label=legend)
         plt.legend(loc="upper left")
+    else:
+        plt.plot(dates_list, players_list)
     plt.grid(True)
 
 
@@ -105,8 +105,7 @@ def change_game_title(sql_data):
     """Changes game title that are too long to be displayed in the chart"""
     shortened_title_names = ["Skyrim VR", "The Walking Dead", "Hot Dogs"]
     games_list = []
-    for game in sql_data:
-        appid, game_title, max_players, avg_players = game
+    for appid, game_title, max_players, avg_players in sql_data:
         for short_title in shortened_title_names:
             if short_title in game_title:
                 games_list.append((appid, short_title, max_players, avg_players))
