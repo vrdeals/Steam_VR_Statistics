@@ -39,7 +39,7 @@ def peak_players_online_sql():
     return c.fetchall()
 
 
-def peak_players_online_sql2(appid):
+def max_peak_players_appid(appid):
     c.execute(f'''
     SELECT strftime('%Y-%m', date) as new_date, 
     max(players) as average from vr_players
@@ -136,9 +136,9 @@ def main():
     plt.savefig('../images/vrgames_avg_peak_over_time.png', bbox_inches='tight')
     plt.subplots()
     chart_title = "The maximum number of simultaneous players on Steam"
-    peak_players_chart(peak_players_online_sql2(appid=620980), chart_title, "navy", "Beat Saber")
-    peak_players_chart(peak_players_online_sql2(appid=555160), chart_title, "orange", "Pavlov")
-    peak_players_chart(peak_players_online_sql2(appid=617830), chart_title, "red", "Super Hot VR")
+    peak_players_chart(max_peak_players_appid(appid=620980), chart_title, "navy", "Beat Saber")
+    peak_players_chart(max_peak_players_appid(appid=555160), chart_title, "orange", "Pavlov")
+    peak_players_chart(max_peak_players_appid(appid=617830), chart_title, "red", "Super Hot VR")
     plt.savefig('../images/BeatSaber_Pavlov_SuperHot_peak.png', bbox_inches='tight')
     top10_chart(top10_sql())
     plt.savefig('../images/vrgames_top10_2020.png', bbox_inches='tight')
