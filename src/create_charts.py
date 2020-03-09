@@ -17,8 +17,8 @@ def top10_sql():
     SELECT vr_players.appid, title, max(players) as Maxplayers, round(avg(players)) as Average from vr_players
     INNER JOIN vr_games ON vr_games.appid = vr_players.appid
     WHERE date >= '2020-01'
-    Group by vr_players.appid
-    Order by Maxplayers DESC
+    GROUP by vr_players.appid
+    ORDER by Maxplayers DESC
     Limit 10
     ''')
     return c.fetchall()
@@ -31,9 +31,9 @@ def peak_players_online_sql():
     sum(players)/(julianday(date,'start of month','+1 month') - julianday(date,'start of month')) 
     as average from vr_players
     WHERE date != '2019-07-24' and date > '2016-03' and date < date('now','start of month')
-    Group by appid, new_date
-    Order by new_date)
-    where average >= 1
+    GROUP by appid, new_date
+    ORDER by new_date)
+    WHERE average >= 1
     Group by new_date
     ''')
     return c.fetchall()
@@ -45,7 +45,7 @@ def max_peak_players_appid(appid):
     SELECT strftime('%Y-%m', date) as new_date, 
     max(players) as average from vr_players
     WHERE appid ="{appid}"  and date >= '2019' and date != '2019-07-24' and date < date('now','start of month')
-    Group by new_date
+    GROUP by new_date
     ''')
     return c.fetchall()
 
