@@ -134,17 +134,17 @@ def main():
 
     chart_title = "Steam VR usage of all VR games based on the monthly average of the daily peak values"
     peak_players_chart(peak_players_online_sql(), chart_title)
-    plt.savefig('../images/avg_peak_over_time.png', bbox_inches='tight')
+    plt.savefig('../images/avg_peak_over_time.png')
 
     plt.subplots()
     chart_title = "The maximum number of simultaneous players on Steam VR"
     top10sql = top10_sql()
     for appid, name, *_ in top10sql[:6]:
         peak_players_chart(max_peak_players_appid(appid), chart_title, name)
-    plt.savefig('../images/max_peak.png', bbox_inches='tight')
+    plt.savefig('../images/max_peak.png')
 
     top10_chart(top10sql)
-    plt.savefig('../images/top10_2020.png', bbox_inches='tight')
+    plt.savefig('../images/top10_2020.png')
     conn.close()
 
     # Displays the charts
