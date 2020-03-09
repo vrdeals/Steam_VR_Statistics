@@ -123,7 +123,7 @@ def main():
     plt.rcParams['axes.xmargin'] = 0.01
     plt.rcParams['axes.ymargin'] = 0.01
     params = {'legend.fontsize': 'small',
-              'figure.figsize': (9, 5),
+              'figure.figsize': (8, 5),
               'axes.labelsize': 'small',
               'axes.titlesize': 'medium',
               'xtick.labelsize': 'small',
