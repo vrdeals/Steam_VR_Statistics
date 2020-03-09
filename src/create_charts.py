@@ -44,7 +44,7 @@ def max_peak_players_appid(appid):
     c.execute(f'''
     SELECT strftime('%Y-%m', date) as new_date, 
     max(players) as average from vr_players
-    WHERE appid ="{appid}"  and date > '2018-05' and date != '2019-07-24' and date < date('now','start of month')
+    WHERE appid ="{appid}"  and date >= '2019' and date != '2019-07-24' and date < date('now','start of month')
     Group by new_date
     ''')
     return c.fetchall()
@@ -84,17 +84,16 @@ def top10_chart(sql_data):
     sns.despine(left=True, bottom=True)
 
 
-def peak_players_chart(sql_data, chart_title, color="", legend=""):
+def peak_players_chart(sql_data, chart_title, legend=""):
     """Creates a chart which shows the peak values with the matplotlib library"""
     dates_list = []
     players_list = []
     for date, players in sql_data:
         dates_list.append(parser.parse(date))     # formatting string into date
         players_list.append(players)
-    style.use('seaborn-dark')
     plt.title(chart_title)
     if legend:
-        plt.plot(dates_list, players_list, color, label=legend)
+        plt.plot(dates_list, players_list, label=legend)
         plt.legend(loc="upper left")
     else:
         plt.plot(dates_list, players_list)
@@ -120,6 +119,7 @@ def main():
     print("The charts will be created which can take a few seconds.")
 
     #  Defines the basic layout for all charts
+    style.use('seaborn')
     plt.rcParams['axes.xmargin'] = 0.01
     plt.rcParams['axes.ymargin'] = 0.01
     params = {'legend.fontsize': 'small',
@@ -131,19 +131,20 @@ def main():
     pylab.rcParams.update(params)
 
     # Creates the charts with the data from the sql queries and saves them
+
     chart_title = "Steam VR usage of all VR games based on the monthly average of the daily peak values"
     peak_players_chart(peak_players_online_sql(), chart_title)
-    plt.savefig('../images/vrgames_avg_peak_over_time.png', bbox_inches='tight')
+    plt.savefig('../images/avg_peak_over_time.png', bbox_inches='tight')
 
     plt.subplots()
-    chart_title = "The maximum number of simultaneous players on Steam for Beat Saber, Pavlov and Super Hot VR"
-    peak_players_chart(max_peak_players_appid(appid=620980), chart_title, "navy", "Beat Saber")
-    peak_players_chart(max_peak_players_appid(appid=555160), chart_title, "orange", "Pavlov")
-    peak_players_chart(max_peak_players_appid(appid=617830), chart_title, "red", "Super Hot VR")
-    plt.savefig('../images/BeatSaber_Pavlov_SuperHot_peak.png', bbox_inches='tight')
+    chart_title = "The maximum number of simultaneous players on Steam VR"
+    top10sql = top10_sql()
+    for appid, name, *_ in top10sql[:6]:
+        peak_players_chart(max_peak_players_appid(appid), chart_title, name)
+    plt.savefig('../images/max_peak.png', bbox_inches='tight')
 
-    top10_chart(top10_sql())
-    plt.savefig('../images/vrgames_top10_2020.png', bbox_inches='tight')
+    top10_chart(top10sql)
+    plt.savefig('../images/top10_2020.png', bbox_inches='tight')
     conn.close()
 
     # Displays the charts
