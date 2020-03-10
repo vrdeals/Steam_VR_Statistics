@@ -11,7 +11,7 @@ conn = sqlite3.connect('../database/vr_games_database.db')
 c = conn.cursor()
 
 
-def top10_sql():
+def sql_top10():
     """Returns the 10 most played VR games since 2020 as a list"""
     c.execute('''
     SELECT vr_players.appid, title, max(players) as Maxplayers, round(avg(players)) as Average from vr_players
@@ -24,7 +24,7 @@ def top10_sql():
     return c.fetchall()
 
 
-def peak_players_online_sql():
+def sql_peak_players():
     """Returns the monthly average of the daily peak values since 2016-03 as a list"""
     c.execute('''
     Select new_date, sum(average) from (SELECT strftime('%Y-%m', date) as new_date, 
@@ -39,7 +39,7 @@ def peak_players_online_sql():
     return c.fetchall()
 
 
-def max_peak_players_appid(appid):
+def sql_max_peak_players(appid):
     """Returns the monthly max peak values of a game as a list"""
     c.execute(f'''
     SELECT strftime('%Y-%m', date) as new_date, 
@@ -133,14 +133,14 @@ def main():
     # Creates the charts with the data from the sql queries and saves them
 
     chart_title = "Steam VR usage of all VR games based on the monthly average of the daily peak values"
-    peak_players_chart(peak_players_online_sql(), chart_title)
+    peak_players_chart(sql_peak_players(), chart_title)
     plt.savefig('../images/avg_peak_over_time.png')
 
     plt.subplots()
     chart_title = "The maximum number of simultaneous players on Steam VR"
-    top10sql = top10_sql()
+    top10sql = sql_top10()
     for appid, name, *_ in top10sql[:6]:
-        peak_players_chart(max_peak_players_appid(appid), chart_title, name)
+        peak_players_chart(sql_max_peak_players(appid), chart_title, name)
     plt.savefig('../images/max_peak.png')
 
     top10_chart(top10sql)
