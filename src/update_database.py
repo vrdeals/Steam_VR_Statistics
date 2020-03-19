@@ -1,4 +1,4 @@
-"""The following external libraries must be installed: Requests, tqdm"""
+"""The external libraries Requests and tqdm must be installed"""
 import json
 import datetime
 import time

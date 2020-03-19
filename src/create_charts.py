@@ -1,4 +1,4 @@
-"""The following external libraries must be installed: matplotlib, seaborn, pandas"""
+"""The external libraries matplotlib, seaborn and pandas must be installed"""
 import sqlite3
 from dateutil import parser
 from matplotlib import pyplot as plt, style, pylab as pylab
