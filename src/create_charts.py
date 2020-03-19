@@ -1,4 +1,4 @@
-"""The external libraries matplotlib, seaborn and pandas must be installed"""
+"""The external libraries matplotlib, seaborn and pandas must be installed."""
 import sqlite3
 from dateutil import parser
 from matplotlib import pyplot as plt, style, pylab as pylab
@@ -12,7 +12,7 @@ c = conn.cursor()
 
 
 def sql_top10():
-    """Returns the 10 most played VR games since 2020 as a list"""
+    """Returns the 10 most played VR games since 2020 as a list."""
     c.execute('''
     SELECT vr_players.appid, title, max(players) as Maxplayers, round(avg(players)) as Average from vr_players
     INNER JOIN vr_games ON vr_games.appid = vr_players.appid
@@ -25,7 +25,7 @@ def sql_top10():
 
 
 def sql_peak_players():
-    """Returns the monthly average of the daily peak values since 2016-03 as a list"""
+    """Returns the monthly average of the daily peak values since 2016-03 as a list."""
     c.execute('''
     Select new_date, sum(average) from (SELECT strftime('%Y-%m', date) as new_date, 
     sum(players)/(julianday(date,'start of month','+1 month') - julianday(date,'start of month')) 
@@ -40,7 +40,7 @@ def sql_peak_players():
 
 
 def sql_max_peak_players(appid):
-    """Returns the monthly max peak values of a game as a list"""
+    """Returns the monthly max peak values of a game as a list."""
     c.execute(f'''
     SELECT strftime('%Y-%m', date) as new_date, 
     max(players) as average from vr_players
@@ -51,7 +51,7 @@ def sql_max_peak_players(appid):
 
 
 def top10_chart(sql_data):
-    """Creates a chart of the 10 most used VR games since 2020 with the seaborn library"""
+    """Creates a chart of the 10 most used VR games since 2020 with the seaborn library."""
     # changes the title length
     sql_data = change_game_title(sql_data)
 
@@ -85,7 +85,7 @@ def top10_chart(sql_data):
 
 
 def peak_players_chart(sql_data, chart_title, legend=""):
-    """Creates a chart which shows the peak values with the matplotlib library"""
+    """Creates a chart which shows the peak values with the matplotlib library."""
     dates_list = []
     players_list = []
     for date, players in sql_data:
@@ -115,7 +115,7 @@ def change_game_title(sql_data):
 
 
 def main():
-    """Generates Charts with the Matplotlib and Seaborn libraries"""
+    """Generates Charts with the Matplotlib and Seaborn libraries."""
     print("The charts will be created which can take a few seconds.")
 
     #  Defines the basic layout for all charts

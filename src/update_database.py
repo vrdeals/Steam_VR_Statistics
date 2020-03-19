@@ -1,4 +1,4 @@
-"""The external libraries Requests and tqdm must be installed"""
+"""The external libraries Requests and tqdm must be installed."""
 import json
 import datetime
 import time
@@ -12,7 +12,7 @@ c = conn.cursor()
 
 
 def sql_create_database():
-    """Creates the tables of the database"""
+    """Creates the tables of the database."""
     with conn:
         c.execute('''CREATE TABLE IF NOT EXISTS vr_games
          (appid integer NOT NULL, title text NOT NULL)''')
@@ -21,26 +21,26 @@ def sql_create_database():
 
 
 def sql_add_game(val):
-    """Adds games to the database"""
+    """Adds games to the database."""
     with conn:
         c.executemany('INSERT INTO vr_games(appid,title) VALUES (?,?)', val)
 
 
 def sql_add_players(val):
-    """Adds players to the database"""
+    """Adds players to the database."""
     with conn:
         c.executemany('''INSERT INTO vr_players(appid,date,players) VALUES(?,?,?)''', val)
 
 
 def sql_reset():
-    """Deletes the contents of the tables"""
+    """Deletes the contents of the tables."""
     with conn:
         c.execute('DELETE FROM vr_games;')
         c.execute('DELETE FROM vr_players;')
 
 
 def get_vrgames_vrlfg():
-    """Get the appid and name of all steam VR games with a VROnly tag and without a Overlay tag"""
+    """Get the appid and name of all steam VR games with a VROnly tag and without a Overlay tag."""
     games = []
     url = "https://www.vrlfg.net/api/games"
     json_data = json.loads(requests.get(url).text)
@@ -51,7 +51,7 @@ def get_vrgames_vrlfg():
 
 
 def get_vrgames_players(appid):
-    """Get the number of players of a game for each day since release"""
+    """Get the number of players of a game for each day since release."""
     players = []
     url = f'https://steamdb.info/api/GetGraph/?type=concurrent_max&appid={appid}'
     headers = {
@@ -82,7 +82,7 @@ def get_vrgames_players(appid):
 
 
 def update_required():
-    """checks if more than 1 month has passed since the last update"""
+    """checks if more than 1 month has passed since the last update."""
     update = False
     today = datetime.date.today()
     update_cycle = today.replace(day=1) - datetime.timedelta(days=20)
