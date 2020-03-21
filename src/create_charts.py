@@ -44,9 +44,21 @@ def sql_max_peak_players(appid):
     c.execute(f'''
     SELECT strftime('%Y-%m', date) as new_date, 
     max(players) as average from vr_players
-    WHERE appid ="{appid}"  and date >= '2019' and date != '2019-07-24' and date < date('now','start of month')
+    WHERE appid ='{appid}'  and date >= '2019' and date != '2019-07-24' and date < date('now','start of month')
     GROUP by new_date
     ''')
+    return c.fetchall()
+
+
+def sql_max_peak_players_monthly(month):
+    """Returns the monthly peak values (sum) of all games as a list."""
+    c.execute(f'''
+    SELECT strftime('%d', date), sum(players) from (
+    SELECT date, players from vr_players
+    WHERE date like '{month}%')
+    GROUP by date
+    ''')
+    # print(c.fetchall())
     return c.fetchall()
 
 
@@ -84,17 +96,19 @@ def top10_chart(sql_data):
     sns.despine(left=True, bottom=True)
 
 
-def peak_players_chart(sql_data, chart_title, legend=""):
+def peak_players_chart(sql_data, chart_title, legend="", location="upper left"):
     """Creates a chart which shows the peak values with the matplotlib library."""
     dates_list = []
     players_list = []
     for date, players in sql_data:
-        dates_list.append(parser.parse(date))     # formatting string into date
+        if len(date) > 2:
+            date = parser.parse(date)  # formatting string into date
+        dates_list.append(date)
         players_list.append(players)
     plt.title(chart_title)
     if legend:
         plt.plot(dates_list, players_list, label=legend)
-        plt.legend(loc="upper left")
+        plt.legend(loc=location)
     else:
         plt.plot(dates_list, players_list)
     plt.grid(True)
@@ -133,18 +147,29 @@ def main():
     # Creates the charts with the data from the sql queries and saves them
     chart_title = "Steam VR usage of all VR games based on the monthly average" \
                   " of the daily peak values"
-    peak_players_chart(sql_peak_players(), chart_title)
+    sql = sql_peak_players()
+    peak_players_chart(sql, chart_title)
     plt.savefig('../images/avg_peak_over_time.png')
 
     plt.subplots()
-    chart_title = "The maximum number of simultaneous players on Steam VR"
-    top10sql = sql_top10()
-    for appid, name, *_ in top10sql[:6]:
+    chart_title = "The maximum number of simultaneous players on Steam VR for the top six"
+    sql = sql_top10()
+    for appid, name, *_ in sql[:6]:
         peak_players_chart(sql_max_peak_players(appid), chart_title, name)
     plt.savefig('../images/max_peak.png')
 
-    top10_chart(top10sql)
+    top10_chart(sql)
     plt.savefig('../images/top10_2020.png')
+
+    plt.subplots()
+    chart_title = "VR usage of the last 2 months based on " \
+                  "the sum of the daily peak values of all Steam VR only games"
+    months = ("2020-01", "2020-02")
+    for month in months:
+        sql = sql_max_peak_players_monthly(month)
+        peak_players_chart(sql, chart_title, month, location='upper right')
+    plt.savefig('../images/monthly_vrusage.png')
+
     conn.close()
 
     # Displays the charts

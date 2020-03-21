@@ -4,5 +4,6 @@ This project analyses all Steam VR only games and determines the daily number of
   <img width="850" height="500" src="https://github.com/Bamux/Steam_VR_Statistics/blob/master/images/top10_2020.png">
   <img width="850" height="500" src="https://github.com/Bamux/Steam_VR_Statistics/blob/master/images/avg_peak_over_time.png">
   <img width="850" height="500" src="https://github.com/Bamux/Steam_VR_Statistics/blob/master/images/max_peak.png">
+  <img width="850" height="500" src="https://github.com/Bamux/Steam_VR_Statistics/blob/master/images/monthly_vrusage.png">
 </p>
 
