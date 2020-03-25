@@ -185,7 +185,7 @@ def main():
     plt.savefig('../images/avg_peak_over_time.png')
 
     plt.subplots()
-    chart_title = "The number of concurrent users on Steam VR for last month's top six"
+    chart_title = "The number of concurrent users on Steam VR for some games"
     first_day = first_day_previous_month()
     sql = sql_top10_previous_month(first_day)
     for appid, name, *_ in sql[:6]:
