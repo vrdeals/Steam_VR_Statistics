@@ -12,12 +12,25 @@ conn = sqlite3.connect('../database/vr_games_database.db')
 c = conn.cursor()
 
 
-def sql_top10(start_date):
+def sql_top10():
+    """Returns the 10 most played VR games since 2016-03 as a list."""
+    c.execute('''
+    SELECT vr_players.appid, title, max(players) as Maxplayers, round(avg(players)) as Average from vr_players
+    INNER JOIN vr_games ON vr_games.appid = vr_players.appid
+    WHERE vr_players.appid != 450110 and vr_players.appid != 692530 and date != '2019-07-24' and date > '2016-03'
+    GROUP by vr_players.appid
+    ORDER by Maxplayers DESC
+    Limit 10
+    ''')
+    return c.fetchall()
+
+
+def sql_top10_previous_month(start_date):
     """Returns the 10 most played VR games from given date to end of last month as a list."""
     c.execute(f'''
     SELECT vr_players.appid, title, max(players) as Maxplayers, round(avg(players)) as Average from vr_players
     INNER JOIN vr_games ON vr_games.appid = vr_players.appid
-    WHERE date >= '{start_date}'
+    WHERE date >= '{start_date}' and date < date('now','start of month')
     GROUP by vr_players.appid
     ORDER by Maxplayers DESC
     Limit 10
@@ -63,7 +76,7 @@ def sql_max_peak_players_monthly(month):
     return c.fetchall()
 
 
-def top10_chart(sql_data, chart_title, month):
+def top10_chart(sql_data, chart_title, month=""):
     """Creates a chart of the 10 most used VR games since 2020 with the seaborn library."""
     # changes the title length
     sql_data = change_game_title(sql_data)
@@ -74,23 +87,29 @@ def top10_chart(sql_data, chart_title, month):
 
     # Initialize the matplotlib figure
     fig, ax = plt.subplots()
-    ax.xaxis.set_major_locator(MultipleLocator(250))
 
     # Creates a Panda data frame with the data from the sqlite database
     top10 = pd.DataFrame(sql_data, columns=['appid', 'game', 'max_players', 'avg_players'])
 
     # Plot the maximum number of players
     sns.set_color_codes("pastel")
-    sns.barplot(x="max_players", y="game", data=top10,
-                label=f"The maximum number of simultaneous players in {month}", color="b")
-
-    # Plot the average number of players
-    sns.set_color_codes("muted")
-    fig = sns.barplot(x="avg_players", y="game", data=top10,
-                      label=f"The average daily peak in {month}", color="b")
+    multiple_locator = 2500
+    if month:
+        month = f' in {month}'
+        multiple_locator = 250
+    else:
+        sns.set_color_codes("muted")
+    ax.xaxis.set_major_locator(MultipleLocator(multiple_locator))
+    fig = sns.barplot(x="max_players", y="game", data=top10,
+                      label=f"The maximum number of concurrent users{month}", color="b")
     fig.axes.set_title(f'{chart_title}', fontsize=10)
     fig.set_xlabel("")
     fig.set_ylabel("")
+
+    # Plot the average number of players
+    if month:
+        sns.set_color_codes("muted")
+        sns.barplot(x="avg_players", y="game", data=top10, label=f"The average daily peak{month}", color="b")
 
     # Add a legend and informative axis label
     ax.legend(ncol=2, loc="lower right", frameon=False)
@@ -117,7 +136,7 @@ def peak_players_chart(sql_data, chart_title, legend="", location="upper left"):
 
 def change_game_title(sql_data):
     """Changes game title that are too long to be displayed in the chart"""
-    shortened_title_names = ["Skyrim VR", "The Walking Dead", "Hot Dogs"]
+    shortened_title_names = ["Skyrim VR", "The Walking Dead", "Hot Dogs", "Rick and Morty"]
     games_list = []
     for appid, game_title, max_players, avg_players in sql_data:
         for short_title in shortened_title_names:
@@ -164,9 +183,9 @@ def main():
     plt.savefig('../images/avg_peak_over_time.png')
 
     plt.subplots()
-    chart_title = "The maximum number of simultaneous players on Steam VR for the top six"
+    chart_title = "The maximum number of concurrent users on Steam VR for the top six"
     first_day = first_day_previous_month()
-    sql = sql_top10(first_day)
+    sql = sql_top10_previous_month(first_day)
     for appid, name, *_ in sql[:6]:
         peak_players_chart(sql_max_peak_players(appid), chart_title, name)
     plt.savefig('../images/max_peak.png')
@@ -185,6 +204,11 @@ def main():
         sql = sql_max_peak_players_monthly(month)
         peak_players_chart(sql, chart_title, month, location='upper right')
     plt.savefig('../images/monthly_vrusage.png')
+
+    sql = sql_top10()
+    chart_title = "Steam VR games with the highest number of concurrent users"
+    top10_chart(sql, chart_title)
+    plt.savefig('../images/top10_max_peak.png')
 
     conn.close()
 
