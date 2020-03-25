@@ -5,18 +5,19 @@ from matplotlib import pyplot as plt, style, pylab as pylab
 from matplotlib.ticker import MultipleLocator
 import seaborn as sns
 import pandas as pd
+from datetime import date, timedelta
 
 # Database connection
 conn = sqlite3.connect('../database/vr_games_database.db')
 c = conn.cursor()
 
 
-def sql_top10():
-    """Returns the 10 most played VR games since 2020 as a list."""
-    c.execute('''
+def sql_top10(start_date):
+    """Returns the 10 most played VR games from given date to end of last month as a list."""
+    c.execute(f'''
     SELECT vr_players.appid, title, max(players) as Maxplayers, round(avg(players)) as Average from vr_players
     INNER JOIN vr_games ON vr_games.appid = vr_players.appid
-    WHERE date >= '2020-01'
+    WHERE date >= '{start_date}'
     GROUP by vr_players.appid
     ORDER by Maxplayers DESC
     Limit 10
@@ -62,7 +63,7 @@ def sql_max_peak_players_monthly(month):
     return c.fetchall()
 
 
-def top10_chart(sql_data):
+def top10_chart(sql_data, chart_title):
     """Creates a chart of the 10 most used VR games since 2020 with the seaborn library."""
     # changes the title length
     sql_data = change_game_title(sql_data)
@@ -87,7 +88,7 @@ def top10_chart(sql_data):
     sns.set_color_codes("muted")
     fig = sns.barplot(x="avg_players", y="game", data=top10,
                       label="The average daily peak since 2020", color="b")
-    fig.axes.set_title("The most played Steam VR games since 2020", fontsize=10)
+    fig.axes.set_title(f'{chart_title}', fontsize=10)
     fig.set_xlabel("")
     fig.set_ylabel("")
 
@@ -100,10 +101,10 @@ def peak_players_chart(sql_data, chart_title, legend="", location="upper left"):
     """Creates a chart which shows the peak values with the matplotlib library."""
     dates_list = []
     players_list = []
-    for date, players in sql_data:
-        if len(date) > 2:
-            date = parser.parse(date)  # formatting string into date
-        dates_list.append(date)
+    for date_data, players in sql_data:
+        if len(date_data) > 2:
+            date_data = parser.parse(date_data)  # formatting string into date
+        dates_list.append(date_data)
         players_list.append(players)
     plt.title(chart_title)
     if legend:
@@ -126,6 +127,17 @@ def change_game_title(sql_data):
         else:
             games_list.append((appid, game_title, max_players, avg_players))
     return games_list
+
+
+def first_day_previous_month():
+    """Returns the date of the first day of the previous month"""
+    today = date.today()
+    first_day_this_month = date(today.year, today.month, 1)
+    last_day_of_the_previous_month = first_day_this_month - timedelta(1)
+    first_day_of_the_previous_month = date(
+        last_day_of_the_previous_month.year,
+        last_day_of_the_previous_month.month, 1)
+    return first_day_of_the_previous_month
 
 
 def main():
@@ -153,13 +165,17 @@ def main():
 
     plt.subplots()
     chart_title = "The maximum number of simultaneous players on Steam VR for the top six"
-    sql = sql_top10()
+    first_day = first_day_previous_month()
+    sql = sql_top10(first_day)
     for appid, name, *_ in sql[:6]:
         peak_players_chart(sql_max_peak_players(appid), chart_title, name)
     plt.savefig('../images/max_peak.png')
 
-    top10_chart(sql)
-    plt.savefig('../images/top10_2020.png')
+    previous_month = first_day.strftime("%B %Y")
+    chart_title = f"The most played Steam VR games in {previous_month}"
+    top10_chart(sql, chart_title)
+    plt.savefig('../images/top10.png')
+    plt.savefig(f'../images/top10_{first_day.strftime("%Y_%m")}.png')
 
     plt.subplots()
     chart_title = "VR usage of the last 2 months based on " \
