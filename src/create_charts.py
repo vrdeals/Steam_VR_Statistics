@@ -206,7 +206,7 @@ def main():
     plt.savefig('../images/monthly_vrusage.png')
 
     sql = sql_top10()
-    chart_title = "Steam VR games with the highest number of concurrent users"
+    chart_title = "Steam VR games with the highest number of concurrent users since 2016"
     top10_chart(sql, chart_title)
     plt.savefig('../images/top10_max_peak.png')
 
