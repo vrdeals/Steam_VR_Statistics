@@ -109,7 +109,9 @@ def top10_chart(sql_data, chart_title, month=""):
     # Plot the average number of players
     if month:
         sns.set_color_codes("muted")
-        sns.barplot(x="avg_players", y="game", data=top10, label=f"The average daily peak{month}", color="b")
+        fig = sns.barplot(x="avg_players", y="game", data=top10, label=f"The average daily peak{month}", color="b")
+        fig.set_xlabel("")
+        fig.set_ylabel("")
 
     # Add a legend and informative axis label
     ax.legend(ncol=2, loc="lower right", frameon=False)
