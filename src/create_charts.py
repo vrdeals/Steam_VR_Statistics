@@ -63,7 +63,7 @@ def sql_max_peak_players_monthly(month):
     return c.fetchall()
 
 
-def top10_chart(sql_data, chart_title):
+def top10_chart(sql_data, chart_title, month):
     """Creates a chart of the 10 most used VR games since 2020 with the seaborn library."""
     # changes the title length
     sql_data = change_game_title(sql_data)
@@ -82,12 +82,12 @@ def top10_chart(sql_data, chart_title):
     # Plot the maximum number of players
     sns.set_color_codes("pastel")
     sns.barplot(x="max_players", y="game", data=top10,
-                label="The maximum peak value achieved since 2020", color="b")
+                label=f"The maximum peak value in {month}", color="b")
 
     # Plot the average number of players
     sns.set_color_codes("muted")
     fig = sns.barplot(x="avg_players", y="game", data=top10,
-                      label="The average daily peak since 2020", color="b")
+                      label=f"The average daily peak in {month}", color="b")
     fig.axes.set_title(f'{chart_title}', fontsize=10)
     fig.set_xlabel("")
     fig.set_ylabel("")
@@ -173,7 +173,7 @@ def main():
 
     previous_month = first_day.strftime("%B %Y")
     chart_title = f"The most played Steam VR games in {previous_month}"
-    top10_chart(sql, chart_title)
+    top10_chart(sql, chart_title, first_day.strftime("%B"))
     plt.savefig('../images/top10.png')
     plt.savefig(f'../images/top10_{first_day.strftime("%Y_%m")}.png')
 
