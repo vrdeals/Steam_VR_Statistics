@@ -82,7 +82,7 @@ def top10_chart(sql_data, chart_title, month):
     # Plot the maximum number of players
     sns.set_color_codes("pastel")
     sns.barplot(x="max_players", y="game", data=top10,
-                label=f"The maximum peak value in {month}", color="b")
+                label=f"The maximum number of simultaneous players in {month}", color="b")
 
     # Plot the average number of players
     sns.set_color_codes("muted")
