@@ -1,11 +1,11 @@
 """The external libraries matplotlib, seaborn and pandas must be installed."""
 import sqlite3
+from datetime import date, timedelta
 from dateutil import parser
 from matplotlib import pyplot as plt, style, pylab as pylab
 from matplotlib.ticker import MultipleLocator
 import seaborn as sns
 import pandas as pd
-from datetime import date, timedelta
 
 # Database connection
 conn = sqlite3.connect('../database/vr_games_database.db')
