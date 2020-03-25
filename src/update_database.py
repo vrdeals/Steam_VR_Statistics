@@ -75,7 +75,7 @@ def get_vrgames_players(appid):
                     players.append((appid, date, players_number))
                 time_stamp += step
     elif "Please do not crawl" in json_data["error"]:
-        tqdm.write("\nThe program is waiting 500 seconds because the website prevents web crawling")
+        tqdm.write("\nThe program is waiting 400 seconds because the website prevents web crawling")
         time.sleep(400)   # The website prevents fast web crawling, therefore the waiting time.
         get_vrgames_players(appid)
     return players
