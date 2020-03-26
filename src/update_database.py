@@ -55,14 +55,33 @@ def update_required():
     today = datetime.date.today()
     update_cycle = today.replace(day=1) - datetime.timedelta(days=20)
     update_cycle = update_cycle.strftime("%Y-%m-%d")
-    # fetches the date of last update
+    sql.create_database()
     last_update = sql.last_update()
     if last_update is None:
         update = True
-    else:
-        if last_update < update_cycle:
-            update = True
+    elif last_update < update_cycle:
+        update = True
     return update
+
+
+def update_database():
+    print("The database will be updated.")
+    games = get_vrgames_vrlfg()
+    print("The data is determined via web crawling which can take a long time.")
+    player_numbers = []
+    progressbar = tqdm(total=len(games))  # Displays a progress bar
+    for game in games:
+        appid = game[0]
+        players = get_vrgames_players(appid)
+        if players is not None and players:
+            player_numbers.extend(players)
+        progressbar.update(1)
+        time.sleep(0.3)  # website prevents fast web crawling, therefore the waiting time
+    progressbar.close()
+    sql.reset()
+    sql.add_game(games)
+    sql.add_players(player_numbers)
+    print("The database was successfully updated.")
 
 
 def main():
@@ -72,26 +91,8 @@ def main():
     www.vrlfg.net (appid of all VR games) using the Requests and JSON library.
     The information is then stored in an SQLite database.
     """
-    sql.create_database()
     if update_required():
-        print("The database will be updated.")
-        games = get_vrgames_vrlfg()
-        print("The data is determined via web crawling which can take a long time.")
-        if games:
-            player_numbers = []
-            progressbar = tqdm(total=len(games))    # Displays a progress bar
-            for game in games:
-                appid = game[0]
-                players = get_vrgames_players(appid)
-                if players is not None and players:
-                    player_numbers.extend(players)
-                progressbar.update(1)
-                time.sleep(0.3)  # website prevents fast web crawling, therefore the waiting time
-            progressbar.close()
-            sql.reset()
-            sql.add_game(games)
-            sql.add_players(player_numbers)
-            print("The database was successfully updated.")
+        update_database()
     else:
         print("The database is up-to-date, no update is required.")
     sql.close_database()
