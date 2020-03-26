@@ -2,41 +2,9 @@
 import json
 import datetime
 import time
-import sqlite3
 import requests
 from tqdm import tqdm
-
-# Database connection
-conn = sqlite3.connect('../database/vr_games_database.db')
-c = conn.cursor()
-
-
-def sql_create_database():
-    """Creates the tables of the database."""
-    with conn:
-        c.execute('''CREATE TABLE IF NOT EXISTS vr_games
-         (appid integer NOT NULL, title text NOT NULL)''')
-        c.execute('''CREATE TABLE IF NOT EXISTS vr_players
-         (appid integer NOT NULL, date text NOT NULL, players integer)''')
-
-
-def sql_add_game(val):
-    """Adds games to the database."""
-    with conn:
-        c.executemany('INSERT INTO vr_games(appid,title) VALUES (?,?)', val)
-
-
-def sql_add_players(val):
-    """Adds players to the database."""
-    with conn:
-        c.executemany('''INSERT INTO vr_players(appid,date,players) VALUES(?,?,?)''', val)
-
-
-def sql_reset():
-    """Deletes the contents of the tables."""
-    with conn:
-        c.execute('DELETE FROM vr_games;')
-        c.execute('DELETE FROM vr_players;')
+from src import sql_query as sql
 
 
 def get_vrgames_vrlfg():
@@ -88,8 +56,7 @@ def update_required():
     update_cycle = today.replace(day=1) - datetime.timedelta(days=20)
     update_cycle = update_cycle.strftime("%Y-%m-%d")
     # fetches the date of last update
-    c.execute('SELECT max(date) FROM vr_players')
-    last_update = c.fetchone()[0]
+    last_update = sql.last_update()
     if last_update is None:
         update = True
     else:
@@ -105,7 +72,7 @@ def main():
     www.vrlfg.net (appid of all VR games) using the Requests and JSON library.
     The information is then stored in an SQLite database.
     """
-    sql_create_database()
+    sql.create_database()
     if update_required():
         print("The database will be updated.")
         games = get_vrgames_vrlfg()
@@ -121,13 +88,13 @@ def main():
                 progressbar.update(1)
                 time.sleep(0.3)  # website prevents fast web crawling, therefore the waiting time
             progressbar.close()
-            sql_reset()
-            sql_add_game(games)
-            sql_add_players(player_numbers)
+            sql.reset()
+            sql.add_game(games)
+            sql.add_players(player_numbers)
             print("The database was successfully updated.")
     else:
         print("The database is up-to-date, no update is required.")
-    conn.close()
+    sql.close_database()
 
 
 if __name__ == "__main__":
