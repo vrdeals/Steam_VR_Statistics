@@ -5,7 +5,7 @@ import seaborn as sns
 from dateutil import parser
 from matplotlib import pyplot as plt, style, pylab as pylab
 from matplotlib.ticker import MultipleLocator
-from src import sql_query as sql
+import sql_query as sql
 
 
 def top10_chart(sql_result, chart_title, scaling_xaxis, label_1, label_2=""):

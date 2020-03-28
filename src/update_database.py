@@ -4,7 +4,7 @@ import datetime
 import time
 import requests
 from tqdm import tqdm
-from src import sql_query as sql
+import sql_query as sql
 
 
 def get_vrgames_vrlfg():
@@ -31,21 +31,23 @@ def get_vrgames_players(appid):
         "Accept-Charset": "ISO-8859-1,utf-8;q=0.7,*;q=0.3"
     }
     json_data = json.loads(requests.get(url, headers=headers).text)
+
     success = json_data["success"]
-    if success:
-        time_stamp = int(json_data["data"]["start"])
-        step = int(json_data["data"]["step"])
-        players_list = json_data["data"]["values"]
-        if players_list:
-            for players_number in players_list:
-                if players_number is not None and players_number > 0:
-                    date = datetime.datetime.utcfromtimestamp(time_stamp).strftime('%Y-%m-%d')
-                    players.append((appid, date, players_number))
-                time_stamp += step
-    elif "Please do not crawl" in json_data["error"]:
+    if not success and "Please do not crawl" in json_data["error"]:
         tqdm.write("\nThe program is waiting 400 seconds because the website prevents web crawling")
         time.sleep(400)   # The website prevents fast web crawling, therefore the waiting time.
         get_vrgames_players(appid)
+
+    players_list = json_data["data"]["values"]
+    if not players_list:
+        return players
+    time_stamp = int(json_data["data"]["start"])
+    step = int(json_data["data"]["step"])
+    for players_number in players_list:
+        if players_number is not None and players_number > 0:
+            date = datetime.datetime.utcfromtimestamp(time_stamp).strftime('%Y-%m-%d')
+            players.append((appid, date, players_number))
+        time_stamp += step
     return players
 
 
@@ -65,6 +67,7 @@ def update_required():
 
 
 def update_database():
+    """adds the data from vrlfg and steamdb to the database"""
     print("The database will be updated.")
     games = get_vrgames_vrlfg()
     print("The data is determined via web crawling which can take a long time.")
