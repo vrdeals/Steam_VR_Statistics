@@ -124,7 +124,7 @@ def main():
     month = first_day.strftime("%B")
     chart_title = f"The most played Steam VR games in {previous_month}"
     label_1 = f"The maximum number of concurrent users in {month}"
-    label_2 = f"The average daily peak{month}"
+    label_2 = f"The average daily peak {month}"
     scaling_xaxis = 250
     top10_chart(sql_result, chart_title, scaling_xaxis, label_1, label_2)
     plt.savefig('../images/top10.png')
