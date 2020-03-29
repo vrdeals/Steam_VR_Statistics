@@ -39,15 +39,14 @@ def get_vrgames_players(appid):
         get_vrgames_players(appid)
 
     players_list = json_data["data"]["values"]
-    if not players_list:
-        return players
-    time_stamp = int(json_data["data"]["start"])
-    step = int(json_data["data"]["step"])
-    for players_number in players_list:
-        if players_number is not None and players_number > 0:
-            date = datetime.datetime.utcfromtimestamp(time_stamp).strftime('%Y-%m-%d')
-            players.append((appid, date, players_number))
-        time_stamp += step
+    if players_list:
+        time_stamp = int(json_data["data"]["start"])
+        step = int(json_data["data"]["step"])
+        for players_number in players_list:
+            if players_number is not None and players_number > 0:
+                date = datetime.datetime.utcfromtimestamp(time_stamp).strftime('%Y-%m-%d')
+                players.append((appid, date, players_number))
+            time_stamp += step
     return players
 
 
