@@ -68,6 +68,9 @@ def update_required():
 
 def update_database():
     """adds the data from vrlfg and steamdb to the database"""
+    if not update_required():
+        print("The database is up-to-date, no update is required.")
+        return
     print("The database will be updated.")
     games = get_vrgames_vrlfg()
     print("The data is determined via web crawling which can take a long time.")
@@ -94,10 +97,7 @@ def main():
     www.vrlfg.net (appid of all VR games) using the Requests and JSON library.
     The information is then stored in an SQLite database.
     """
-    if update_required():
-        update_database()
-    else:
-        print("The database is up-to-date, no update is required.")
+    update_database()
     sql.close_database()
 
 
