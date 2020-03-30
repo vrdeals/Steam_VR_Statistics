@@ -65,28 +65,11 @@ def update_required():
     return update
 
 
-def update_database():
-    """adds the data from vrlfg and steamdb to the database"""
-    if not update_required():
-        print("The database is up-to-date, no update is required.")
-        return
-    print("The database will be updated.")
-    games = get_vrgames_vrlfg()
-    print("The data is determined via web crawling which can take a long time.")
-    player_numbers = []
-    progressbar = tqdm(total=len(games))  # Displays a progress bar
-    for game in games:
-        appid = game[0]
-        players = get_vrgames_players(appid)
-        if players is not None and players:
-            player_numbers.extend(players)
-        progressbar.update(1)
-        time.sleep(0.3)  # website prevents fast web crawling, therefore the waiting time
-    progressbar.close()
+def update_database(games, player_numbers):
+    """adds the games and player numbers to the database"""
     sql.reset()
     sql.add_game(games)
     sql.add_players(player_numbers)
-    print("The database was successfully updated.")
 
 
 def main():
@@ -96,9 +79,26 @@ def main():
     www.vrlfg.net (appid of all VR games) using the Requests and JSON library.
     The information is then stored in an SQLite database.
     """
-    update_database()
-    sql.close_database()
+    if not update_required():
+        print("The database is up-to-date, no update is required.")
+        return
+    print("The database will be updated.")
+    player_numbers = []
+    games = get_vrgames_vrlfg()
+    print("The data is determined via web crawling which can take a long time.")
+    progressbar = tqdm(total=len(games))  # Displays a progress bar
+    for game in games:
+        appid = game[0]
+        players = get_vrgames_players(appid)
+        if players is not None and players:
+            player_numbers.extend(players)
+        progressbar.update(1)
+        time.sleep(0.3)  # website prevents fast web crawling, therefore the waiting time
+    progressbar.close()
+    update_database(games, player_numbers)
+    print("The database was successfully updated.")
 
 
 if __name__ == "__main__":
     main()
+    sql.close_database()
