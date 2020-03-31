@@ -50,6 +50,21 @@ def get_vrgames_players(appid):
     return players
 
 
+def number_of_players(games):
+    """Shows a progress bar and returns a list with the number of players of each VR game"""
+    player_numbers = []
+    progressbar = tqdm(total=len(games))  # Displays a progress bar
+    for game in games:
+        appid = game[0]
+        players = get_vrgames_players(appid)
+        if players is not None and players:
+            player_numbers.extend(players)
+        progressbar.update(1)
+        time.sleep(0.3)  # website prevents fast web crawling, therefore the waiting time
+    progressbar.close()
+    return player_numbers
+
+
 def update_required():
     """checks if more than 1 month has passed since the last update."""
     update = False
@@ -65,11 +80,11 @@ def update_required():
     return update
 
 
-def update_database(games, player_numbers):
+def update_database(games, numbers):
     """adds the games and player numbers to the database"""
     sql.reset()
     sql.add_game(games)
-    sql.add_players(player_numbers)
+    sql.add_players(numbers)
 
 
 def main():
@@ -79,26 +94,17 @@ def main():
     www.vrlfg.net (appid of all VR games) using the Requests and JSON library.
     The information is then stored in an SQLite database.
     """
-    if not update_required():
+    if update_required():
+        print("The database will be updated.")
+        games = get_vrgames_vrlfg()
+        print("The data is determined via web crawling which can take a long time.")
+        numbers = number_of_players(games)
+        update_database(games, numbers)
+        print("The database was successfully updated.")
+    else:
         print("The database is up-to-date, no update is required.")
-        return
-    print("The database will be updated.")
-    player_numbers = []
-    games = get_vrgames_vrlfg()
-    print("The data is determined via web crawling which can take a long time.")
-    progressbar = tqdm(total=len(games))  # Displays a progress bar
-    for game in games:
-        appid = game[0]
-        players = get_vrgames_players(appid)
-        if players is not None and players:
-            player_numbers.extend(players)
-        progressbar.update(1)
-        time.sleep(0.3)  # website prevents fast web crawling, therefore the waiting time
-    progressbar.close()
-    update_database(games, player_numbers)
-    print("The database was successfully updated.")
+    sql.close_database()
 
 
 if __name__ == "__main__":
     main()
-    sql.close_database()

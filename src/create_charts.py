@@ -8,7 +8,7 @@ from matplotlib.ticker import MultipleLocator
 import sql_query as sql
 
 
-def top10_chart(sql_result, chart_title, scaling_xaxis, label_1, label_2=""):
+def top10_chart(sql_result, chart_title, scaling_xaxis, labels):
     """Creates a chart of the 10 most used VR games since 2020 with the seaborn library."""
 
     # Defines the used graphic style and reduces the text size to fit all information on the chart
@@ -22,21 +22,21 @@ def top10_chart(sql_result, chart_title, scaling_xaxis, label_1, label_2=""):
     top10 = pd.DataFrame(sql_result, columns=['appid', 'game', 'max_players', 'avg_players'])
 
     # Plot the maximum number of players
-    if label_2:
+    if labels[1]:
         sns.set_color_codes("pastel")
     else:
         sns.set_color_codes("muted")
     ax.xaxis.set_major_locator(MultipleLocator(scaling_xaxis))
     fig = sns.barplot(x="max_players", y="game", data=top10,
-                      label=label_1, color="b")
+                      label=labels[0], color="b")
     fig.axes.set_title(f'{chart_title}', fontsize=10)
     fig.set_xlabel("")
     fig.set_ylabel("")
 
     # Plot the average number of players
-    if label_2:
+    if labels[1]:
         sns.set_color_codes("muted")
-        fig = sns.barplot(x="avg_players", y="game", data=top10, label=label_2, color="b")
+        fig = sns.barplot(x="avg_players", y="game", data=top10, label=labels[1], color="b")
         fig.set_xlabel("")
         fig.set_ylabel("")
 
@@ -123,10 +123,11 @@ def main():
     previous_month = first_day.strftime("%B %Y")
     month = first_day.strftime("%B")
     chart_title = f"The most played Steam VR games in {previous_month}"
-    label_1 = f"The maximum number of concurrent users in {month}"
-    label_2 = f"The average daily peak {month}"
+    labels = (f'The maximum number of concurrent users in {month}',
+              f'The average daily peak {month}')
+    print(labels[0])
     scaling_xaxis = 250
-    top10_chart(sql_result, chart_title, scaling_xaxis, label_1, label_2)
+    top10_chart(sql_result, chart_title, scaling_xaxis, labels)
     plt.savefig('../images/top10.png')
     plt.savefig(f'../images/top10_{first_day.strftime("%Y_%m")}.png')
 
@@ -142,9 +143,9 @@ def main():
     sql_result = sql.top10()
     sql_result = change_game_title(sql_result)
     chart_title = "Steam VR games with the highest number of concurrent users since 2016"
-    label_1 = "The maximum number of concurrent users"
+    labels = ("The maximum number of concurrent users", "")
     scaling_xaxis = 2500
-    top10_chart(sql_result, chart_title, scaling_xaxis, label_1)
+    top10_chart(sql_result, chart_title, scaling_xaxis, labels)
     plt.savefig('../images/top10_max_peak.png')
 
     sql.close_database()
