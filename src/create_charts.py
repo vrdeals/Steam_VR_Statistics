@@ -8,7 +8,7 @@ from matplotlib.ticker import MultipleLocator
 import sql_query as sql
 
 
-def top10_chart(sql_result, chart_title, scaling_xaxis, labels):
+def top10_chart(sql_result, chart_title, labels):
     """Creates a chart of the 10 most used VR games since 2020 with the seaborn library."""
 
     # Defines the used graphic style and reduces the text size to fit all information on the chart
@@ -26,6 +26,7 @@ def top10_chart(sql_result, chart_title, scaling_xaxis, labels):
         sns.set_color_codes("pastel")
     else:
         sns.set_color_codes("muted")
+    scaling_xaxis = 2500
     ax.xaxis.set_major_locator(MultipleLocator(scaling_xaxis))
     fig = sns.barplot(x="max_players", y="game", data=top10,
                       label=labels[0], color="b")
@@ -116,7 +117,7 @@ def main():
     first_day = first_day_previous_month()
     sql_result = sql.top10_previous_month(first_day)
     sql_result = change_game_title(sql_result)
-    for appid, name, *_ in sql_result[:6]:
+    for appid, name, *_ in sql_result[1:7]:
         peak_players_chart(sql.max_peak_players(appid), chart_title, name)
     plt.savefig('../images/max_peak.png')
 
@@ -125,16 +126,13 @@ def main():
     chart_title = f"The most played Steam VR games in {previous_month}"
     labels = (f'The maximum number of concurrent users in {month}',
               f'The average daily peak {month}')
-    print(labels[0])
-    scaling_xaxis = 250
-    top10_chart(sql_result, chart_title, scaling_xaxis, labels)
+    top10_chart(sql_result, chart_title, labels)
     plt.savefig('../images/top10.png')
     plt.savefig(f'../images/top10_{first_day.strftime("%Y_%m")}.png')
 
     plt.subplots()
-    chart_title = "VR usage of the last 2 months based on " \
-                  "the sum of the daily peak values of all Steam VR only games"
-    months = ("2020-01", "2020-02")
+    chart_title = "VR usage of the last 3 months based on the daily peak values of all Steam VR only games"
+    months = ("2020-01", "2020-02", "2020-03")
     for month in months:
         sql_result = sql.max_peak_players_monthly(month)
         peak_players_chart(sql_result, chart_title, month, location='upper right')
@@ -144,8 +142,7 @@ def main():
     sql_result = change_game_title(sql_result)
     chart_title = "Steam VR games with the highest number of concurrent users since 2016"
     labels = ("The maximum number of concurrent users", "")
-    scaling_xaxis = 2500
-    top10_chart(sql_result, chart_title, scaling_xaxis, labels)
+    top10_chart(sql_result, chart_title, labels)
     plt.savefig('../images/top10_max_peak.png')
 
     sql.close_database()
