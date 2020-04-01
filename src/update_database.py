@@ -1,6 +1,6 @@
 """The external libraries Requests and tqdm must be installed."""
 import json
-import datetime
+from datetime import datetime, date, timedelta
 import time
 import requests
 from tqdm import tqdm
@@ -21,6 +21,7 @@ def get_vrgames_vrlfg():
 def get_vrgames_players(appid):
     """Get the number of players of a game for each day since release."""
     players = []
+    players_list = []
     url = f'https://steamdb.info/api/GetGraph/?type=concurrent_max&appid={appid}'
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) "
@@ -31,21 +32,20 @@ def get_vrgames_players(appid):
         "Accept-Charset": "ISO-8859-1,utf-8;q=0.7,*;q=0.3"
     }
     json_data = json.loads(requests.get(url, headers=headers).text)
-
     success = json_data["success"]
-    if not success and "Please do not crawl" in json_data["error"]:
+    if success:
+        players_list = json_data["data"]["values"]
+    elif "Please do not crawl" in json_data["error"]:
         tqdm.write("\nThe program is waiting 400 seconds because the website prevents web crawling")
         time.sleep(400)   # The website prevents fast web crawling, therefore the waiting time.
         get_vrgames_players(appid)
-
-    players_list = json_data["data"]["values"]
     if players_list:
         time_stamp = int(json_data["data"]["start"])
         step = int(json_data["data"]["step"])
         for players_number in players_list:
             if players_number is not None and players_number > 0:
-                date = datetime.datetime.utcfromtimestamp(time_stamp).strftime('%Y-%m-%d')
-                players.append((appid, date, players_number))
+                date_daily_peak = datetime.utcfromtimestamp(time_stamp).strftime('%Y-%m-%d')
+                players.append((appid, date_daily_peak, players_number))
             time_stamp += step
     return players
 
@@ -66,16 +66,17 @@ def number_of_players(games):
 
 
 def update_required():
-    """checks if more than 1 month has passed since the last update."""
+    """Checks if the last update is older than the last day of the previous month."""
     update = False
-    today = datetime.date.today()
-    update_cycle = today.replace(day=1) - datetime.timedelta(days=20)
-    update_cycle = update_cycle.strftime("%Y-%m-%d")
+    today = date.today()
+    first_day_this_month = date(today.year, today.month, 1)
+    last_day_of_the_previous_month = first_day_this_month - timedelta(1)
+    last_day_of_the_previous_month = last_day_of_the_previous_month.strftime("%Y-%m-%d")
     sql.create_database()
     last_update = sql.last_update()
     if last_update is None:
         update = True
-    elif last_update < update_cycle:
+    elif last_update < last_day_of_the_previous_month:
         update = True
     return update
 
