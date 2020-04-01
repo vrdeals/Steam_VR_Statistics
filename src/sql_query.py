@@ -65,33 +65,33 @@ def top10_previous_month(start_date):
     return c.fetchall()
 
 
+def peak_players():
+    """Returns the monthly average of the daily peak values since 2016-03 as a list."""
+    c.execute('''
+    Select new_date, sum(average) from (SELECT strftime('%Y-%m', date) as new_date,
+    sum(players)/(julianday(date,'start of month','+1 month') - julianday(date,'start of month'))
+    as average from vr_players
+    WHERE date != '2019-07-24' and date > '2016-03' and date < date('now','start of month')
+    GROUP by appid, new_date
+    ORDER by new_date)
+    WHERE average >= 1
+    Group by new_date
+    ''')
+    return c.fetchall()
+
+
 # def peak_players():
 #     """Returns the monthly average of the daily peak values since 2016-03 as a list."""
 #     c.execute('''
 #     Select new_date, sum(average) from (SELECT strftime('%Y-%m', date) as new_date,
-#     sum(players)/(julianday(date,'start of month','+1 month') - julianday(date,'start of month'))
-#     as average from vr_players
-#     WHERE appid != 546560 and date != '2019-07-24' and date > '2016-03' and date < date('now','start of month')
+#     avg(players) as average from vr_players
+#     WHERE date != '2019-07-24' and date > '2016-03' and date < date('now','start of month')
 #     GROUP by appid, new_date
 #     ORDER by new_date)
-#     WHERE average >= 1
+#     WHERE average > 2
 #     Group by new_date
 #     ''')
 #     return c.fetchall()
-
-
-def peak_players():
-    """Returns the monthly average of the daily peak values since 2016-03 as a list."""
-    c.execute('''
-    Select new_date, sum(average) from (SELECT strftime('%Y-%m', date) as new_date, 
-    avg(players) as average from vr_players
-    WHERE date != '2019-07-24' and date > '2016-03' and date < date('now','start of month')
-    GROUP by appid, new_date
-    ORDER by new_date)
-    WHERE average > 2
-    Group by new_date
-    ''')
-    return c.fetchall()
 
 
 def max_peak_players(appid):
