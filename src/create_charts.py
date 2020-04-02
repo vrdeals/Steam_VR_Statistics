@@ -12,8 +12,8 @@ def layout():
     """Defines the basic layout for all charts"""
     style.use('seaborn')
     plt.style.use('seaborn-muted')
-    # plt.rcParams['axes.xmargin'] = 0.01
-    # plt.rcParams['axes.ymargin'] = 0.01
+    plt.rcParams['axes.xmargin'] = 0.01
+    # plt.rcParams['axes.ymargin'] = 0.04
     params = {'legend.fontsize': 'small',
               'figure.figsize': (8.5, 5),
               'axes.labelsize': 'small',
