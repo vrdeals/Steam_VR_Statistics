@@ -48,10 +48,11 @@ def change_game_title(sql_result):
     return games_list
 
 
-def line_chart(sql_result, chart_title, legend="", location="upper left"):
+def line_chart(sql_result, chart_title, legend=""):
     """Creates a line chart which with the matplotlib library."""
     dates_list = []
     players_list = []
+    location = "upper left"
     for date_data, players in sql_result:
         if len(date_data) > 2:
             date_data = parser.parse(date_data)  # formatting string into date
@@ -82,7 +83,7 @@ def create_line_charts(first_day):
     months = ("2020-01", "2020-02", "2020-03")
     for month in months:
         sql_result = sql.max_peak_players_monthly(month)
-        line_chart(sql_result, chart_title, month, location='upper right')
+        line_chart(sql_result, chart_title, month)
     plt.savefig('../images/monthly_vrusage.png')
 
     # Chart 3
