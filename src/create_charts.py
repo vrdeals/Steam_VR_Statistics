@@ -8,7 +8,94 @@ from matplotlib.ticker import MultipleLocator
 import sql_query as sql
 
 
-def top10_chart(sql_result, chart_title, labels):
+def layout():
+    """Defines the basic layout for all charts"""
+    style.use('seaborn')
+    plt.style.use('seaborn-muted')
+    plt.rcParams['axes.xmargin'] = 0.01
+    plt.rcParams['axes.ymargin'] = 0.01
+    params = {'legend.fontsize': 'small',
+              'figure.figsize': (8.5, 5),
+              'axes.labelsize': 'small',
+              'axes.titlesize': 'medium',
+              'xtick.labelsize': 'small',
+              'ytick.labelsize': 'small'}
+    pylab.rcParams.update(params)
+
+
+def first_day_previous_month():
+    """Returns the date of the first day of the previous month"""
+    today = date.today()
+    first_day_this_month = date(today.year, today.month, 1)
+    last_day_of_the_previous_month = first_day_this_month - timedelta(1)
+    first_day_of_the_previous_month = date(
+        last_day_of_the_previous_month.year,
+        last_day_of_the_previous_month.month, 1)
+    return first_day_of_the_previous_month
+
+
+def change_game_title(sql_result):
+    """Changes game title that are too long to be displayed in the chart"""
+    shortened_title_names = ["Skyrim VR", "The Walking Dead", "Hot Dogs", "Rick and Morty"]
+    games_list = []
+    for appid, game_title, max_players, avg_players in sql_result:
+        for short_title in shortened_title_names:
+            if short_title in game_title:
+                games_list.append((appid, short_title, max_players, avg_players))
+                break
+        else:
+            games_list.append((appid, game_title, max_players, avg_players))
+    return games_list
+
+
+def line_chart(sql_result, chart_title, legend="", location="upper left"):
+    """Creates a line chart which with the matplotlib library."""
+    dates_list = []
+    players_list = []
+    for date_data, players in sql_result:
+        if len(date_data) > 2:
+            date_data = parser.parse(date_data)  # formatting string into date
+        dates_list.append(date_data)
+        players_list.append(players)
+    plt.title(chart_title)
+    if legend:
+        plt.plot(dates_list, players_list, label=legend)
+        plt.legend(loc=location)
+    else:
+        plt.plot(dates_list, players_list)
+    plt.grid(True)
+
+
+def create_line_charts(first_day):
+    """Creates the line charts with the data from the sql queries and saves them"""
+
+    # Chart 1
+    chart_title = "Steam VR usage of all VR games based on the monthly average" \
+                  " of the daily peak values"
+    sql_result = sql.peak_players()
+    line_chart(sql_result, chart_title)
+    plt.savefig('../images/avg_peak_over_time.png')
+
+    # Chart 2
+    plt.subplots()
+    chart_title = "VR usage of the last 3 months based on the daily peak values of all Steam VR only games"
+    months = ("2020-01", "2020-02", "2020-03")
+    for month in months:
+        sql_result = sql.max_peak_players_monthly(month)
+        line_chart(sql_result, chart_title, month, location='upper right')
+    plt.savefig('../images/monthly_vrusage.png')
+
+    # Chart 3
+    plt.subplots()
+    chart_title = "The number of concurrent users on Steam VR for some games"
+    sql_result = sql.top10_previous_month(first_day)
+    # sql_result = change_game_title(sql_result)
+    for appid, name, *_ in sql_result[1:7]:
+        line_chart(sql.max_peak_players(appid), chart_title, name)
+    plt.savefig('../images/max_peak.png')
+
+
+def bar_chart(sql_result, chart_title, labels):
     """Creates a chart of the 10 most used VR games since 2020 with the seaborn library."""
 
     # Defines the used graphic style and reduces the text size to fit all information on the chart
@@ -46,109 +133,39 @@ def top10_chart(sql_result, chart_title, labels):
     sns.despine(left=True, bottom=True)
 
 
-def peak_players_chart(sql_result, chart_title, legend="", location="upper left"):
-    """Creates a chart which shows the peak values with the matplotlib library."""
-    dates_list = []
-    players_list = []
-    for date_data, players in sql_result:
-        if len(date_data) > 2:
-            date_data = parser.parse(date_data)  # formatting string into date
-        dates_list.append(date_data)
-        players_list.append(players)
-    plt.title(chart_title)
-    if legend:
-        plt.plot(dates_list, players_list, label=legend)
-        plt.legend(loc=location)
-    else:
-        plt.plot(dates_list, players_list)
-    plt.grid(True)
+def create_bar_charts(first_day):
+    """Creates the bar charts with the data from the sql queries and saves them"""
 
-
-def change_game_title(sql_result):
-    """Changes game title that are too long to be displayed in the chart"""
-    shortened_title_names = ["Skyrim VR", "The Walking Dead", "Hot Dogs", "Rick and Morty"]
-    games_list = []
-    for appid, game_title, max_players, avg_players in sql_result:
-        for short_title in shortened_title_names:
-            if short_title in game_title:
-                games_list.append((appid, short_title, max_players, avg_players))
-                break
-        else:
-            games_list.append((appid, game_title, max_players, avg_players))
-    return games_list
-
-
-def first_day_previous_month():
-    """Returns the date of the first day of the previous month"""
-    today = date.today()
-    first_day_this_month = date(today.year, today.month, 1)
-    last_day_of_the_previous_month = first_day_this_month - timedelta(1)
-    first_day_of_the_previous_month = date(
-        last_day_of_the_previous_month.year,
-        last_day_of_the_previous_month.month, 1)
-    return first_day_of_the_previous_month
-
-
-def main():
-    """Generates Charts with the Matplotlib and Seaborn libraries."""
-    print("The charts will be created which can take a few seconds.")
-
-    #  Defines the basic layout for all charts
-    style.use('seaborn')
-    plt.rcParams['axes.xmargin'] = 0.01
-    plt.rcParams['axes.ymargin'] = 0.01
-    params = {'legend.fontsize': 'small',
-              'figure.figsize': (8.5, 5),
-              'axes.labelsize': 'small',
-              'axes.titlesize': 'medium',
-              'xtick.labelsize': 'small',
-              'ytick.labelsize': 'small'}
-    pylab.rcParams.update(params)
-
-    # Creates the charts with the data from the sql queries and saves them
-    chart_title = "Steam VR usage of all VR games based on the monthly average" \
-                  " of the daily peak values"
-    sql_result = sql.peak_players()
-    peak_players_chart(sql_result, chart_title)
-    plt.savefig('../images/avg_peak_over_time.png')
-
-    plt.subplots()
-    chart_title = "The number of concurrent users on Steam VR for some games"
-    first_day = first_day_previous_month()
-    sql_result = sql.top10_previous_month(first_day)
-    sql_result = change_game_title(sql_result)
-    for appid, name, *_ in sql_result[1:7]:
-        peak_players_chart(sql.max_peak_players(appid), chart_title, name)
-    plt.savefig('../images/max_peak.png')
-
+    # Chart 1
     previous_month = first_day.strftime("%B %Y")
     month = first_day.strftime("%B")
     chart_title = f"The most played Steam VR games in {previous_month}"
     labels = (f'The maximum number of concurrent users in {month}',
               f'The average daily peak {month}')
-    top10_chart(sql_result, chart_title, labels)
+    sql_result = sql.top10_previous_month(first_day)
+    sql_result = change_game_title(sql_result)
+    bar_chart(sql_result, chart_title, labels)
     plt.savefig('../images/top10.png')
     plt.savefig(f'../images/top10_{first_day.strftime("%Y_%m")}.png')
 
-    plt.subplots()
-    chart_title = "VR usage of the last 3 months based on the daily peak values of all Steam VR only games"
-    months = ("2020-01", "2020-02", "2020-03")
-    for month in months:
-        sql_result = sql.max_peak_players_monthly(month)
-        peak_players_chart(sql_result, chart_title, month, location='upper right')
-    plt.savefig('../images/monthly_vrusage.png')
-
+    # Chart 2
     sql_result = sql.top10()
     sql_result = change_game_title(sql_result)
     chart_title = "Steam VR games with the highest number of concurrent users since 2016"
     labels = ("The maximum number of concurrent users", "")
-    top10_chart(sql_result, chart_title, labels)
+    bar_chart(sql_result, chart_title, labels)
     plt.savefig('../images/top10_max_peak.png')
 
-    sql.close_database()
 
-    # Displays the charts
-    plt.show()
+def main():
+    """Generates Charts with the Matplotlib and Seaborn libraries."""
+    print("The charts will be created which can take a few seconds.")
+    layout()
+    first_day = first_day_previous_month()
+    create_line_charts(first_day)
+    create_bar_charts(first_day)
+    sql.close_database()
+    plt.show()                # Displays the charts
     print("The charts were successfully saved in the images folder.")
 
 
