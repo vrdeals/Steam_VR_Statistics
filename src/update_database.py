@@ -8,8 +8,8 @@ from tqdm import tqdm
 import sql_query as sql
 
 
-def check_appids_existing(appid_list, game_list):
-    """Checks if the appid does not yet exist in the database"""
+def check_appids_exist(appid_list, game_list):
+    """Checks if the appid does not exist in the database and blacklist"""
     games = []
     blacklist = (692530, 450110, 422100, 577890, 587710, 516950, 612250, 547040,
                  547040, 607440, 604830)    # outliers
