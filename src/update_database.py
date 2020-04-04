@@ -13,9 +13,11 @@ def get_new_vrgames_steam():
     infinite_scrolling = 0
     games = []
     while True:
-        url = 'https://store.steampowered.com/search/results/?query&start={}&count=50&dynamic_data=&sort_by=Released_' \
-              'DESC&force_infinite=1&category1=998&vrsupport=401&snr=1_7_7_230_7&infinite=1'.format(infinite_scrolling)
+        url = f'https://store.steampowered.com/search/results/?query&start={infinite_scrolling}' \
+              f'&count=50&dynamic_data=&sort_by=Released_DESC&force_infinite=1' \
+              f'&category1=998&vrsupport=401&snr=1_7_7_230_7&infinite=1'
         json_data = json.loads(requests.get(url).text)
+        print(url)
         if json_data["results_html"] == "\r\n<!-- List Items -->\r\n<!-- End List Items -->\r\n":
             return games
         tree = html.fromstring(json_data["results_html"])
