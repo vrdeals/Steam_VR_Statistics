@@ -11,9 +11,10 @@ import sql_query as sql
 def check_appids_existing(appid_list, game_list):
     """Checks if the appid does not yet exist in the database"""
     games = []
+    blacklist = (422100, 577890, 587710, 516950, 612250, 547040, 547040, 607440, 604830)
     for appid, game in zip(appid_list, game_list):
         existing_appid = sql.get_appid(appid)
-        if existing_appid is None:
+        if appid not in blacklist and existing_appid is None:
             print("Appid:", appid, "Game:", game)
             games.append((appid, game))
     return games
