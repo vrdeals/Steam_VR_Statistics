@@ -33,8 +33,7 @@ def get_new_vrgames_steam():
         tree = html.fromstring(json_data["results_html"])
         appid_list = tree.xpath('//a/@data-ds-appid')
         game_list = tree.xpath('//span[@class="title"]/text()')
-        games = check_appids_existing(appid_list, game_list)
-        if games:
+        if games := check_appids_existing(appid_list, game_list):
             new_games.extend(games)
         else:
             return new_games
