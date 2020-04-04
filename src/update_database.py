@@ -29,15 +29,16 @@ def get_new_vrgames_steam():
               f'&category1=998&vrsupport=401&snr=1_7_7_230_7&infinite=1'
         json_data = json.loads(requests.get(url).text)
         if json_data["results_html"] == "\r\n<!-- List Items -->\r\n<!-- End List Items -->\r\n":
-            return new_games
+            break
         tree = html.fromstring(json_data["results_html"])
         appid_list = tree.xpath('//a/@data-ds-appid')
         game_list = tree.xpath('//span[@class="title"]/text()')
         if games := check_appids_existing(appid_list, game_list):
             new_games.extend(games)
         else:
-            return new_games
+            break
         infinite_scrolling += 50
+    return new_games
 
 
 def get_vrgames_players(appid):
