@@ -1,4 +1,6 @@
-"""The external libraries Requests, lxml and tqdm must be installed."""
+"""
+Requires Python 3.8 or higher and the external libraries Requests, lxml and tqdm.
+"""
 from lxml import html
 import json
 from datetime import datetime, date, timedelta
@@ -108,16 +110,13 @@ def main():
     The information is then stored in an SQLite database.
     """
     print("Checking if new VR games are available.")
-    update = update_required()
-    games = get_new_vrgames_steam()
-    if games:
+    if games := get_new_vrgames_steam():
         sql.add_game(games)
-    if update:
+    if update := update_required():
         games = sql.get_all_games()
     elif not games:
         print("The database is up-to-date, no update is required.")
-    numbers = number_of_players(games)
-    if numbers and update:
+    if numbers := number_of_players(games) and update:
         sql.reset()
     sql.add_players(numbers)
     sql.close_database()
