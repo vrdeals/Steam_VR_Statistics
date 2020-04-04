@@ -43,16 +43,16 @@ def get_new_vrgames_steam():
 
 def date_each_day(appid, json_data):
     """Determines the date for each day of a game."""
-    players_date = []
+    players_each_day = []
     time_stamp = int(json_data["data"]["start"])
     step = int(json_data["data"]["step"])
     players_list = json_data["data"]["values"]
     for players_number in players_list:
         if players_number is not None and players_number > 0:
             date_daily_peak = datetime.utcfromtimestamp(time_stamp).strftime('%Y-%m-%d')
-            players_date.append((appid, date_daily_peak, players_number))
+            players_each_day.append((appid, date_daily_peak, players_number))
         time_stamp += step
-    return players_date
+    return players_each_day
 
 
 def get_vrgames_players(appid):
