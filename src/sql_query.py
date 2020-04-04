@@ -55,7 +55,7 @@ def top10():
     c.execute('''
     SELECT vr_players.appid, title, max(players) as Maxplayers, round(avg(players)) as Average from vr_players
     INNER JOIN vr_games ON vr_games.appid = vr_players.appid
-    WHERE vr_players.appid != 450110 and vr_players.appid != 692530 and date != '2019-07-24' and date > '2016-03'
+    WHERE date != '2019-07-24' and date > '2016-03'
     GROUP by vr_players.appid
     ORDER by Maxplayers DESC
     Limit 10
