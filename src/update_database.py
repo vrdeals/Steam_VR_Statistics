@@ -11,11 +11,8 @@ import sql_query as sql
 def check_appids_existing(appid_list, game_list):
     """Checks if the appid does not yet exist in the database"""
     games = []
-
-    # outliers probably errors in the recording of player numbers
     blacklist = (692530, 450110, 422100, 577890, 587710, 516950, 612250, 547040,
-                 547040, 607440, 604830)
-
+                 547040, 607440, 604830)    # outliers
     for appid, game in zip(appid_list, game_list):
         existing_appid = sql.get_appid(appid)
         if appid not in blacklist and existing_appid is None:
