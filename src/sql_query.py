@@ -28,9 +28,8 @@ def get_appid(appid):
 
 def add_game(val):
     """Adds games to the database."""
-    if val:
-        with conn:
-            c.executemany('INSERT INTO vr_games(appid,title) VALUES (?,?)', val)
+    with conn:
+        c.executemany('INSERT INTO vr_games(appid,title) VALUES (?,?)', val)
 
 
 def add_players(val):
