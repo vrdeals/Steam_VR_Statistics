@@ -1,4 +1,5 @@
-"""The external libraries Requests and tqdm must be installed."""
+"""The external libraries Requests, lxml and tqdm must be installed."""
+from lxml import html
 import json
 from datetime import datetime, date, timedelta
 import time
@@ -7,15 +8,27 @@ from tqdm import tqdm
 import sql_query as sql
 
 
-def get_vrgames_vrlfg():
-    """Get the appid and name of all steam VR games with a VROnly tag and without a Overlay tag."""
+def get_new_vrgames_steam():
+    """Get the appid and name of all new steam VR games with a vr only tag, sorted by release date(desc)"""
+    infinite_scrolling = 0
     games = []
-    url = "https://www.vrlfg.net/api/games"
-    json_data = json.loads(requests.get(url).text)
-    for item in json_data:
-        if item["VROnly"] == 1 and item["Overlay"] == 0:
-            games.append((item['gameid'], item["Name"]))
-    return games
+    while True:
+        url = 'https://store.steampowered.com/search/results/?query&start={}&count=50&dynamic_data=&sort_by=Released_' \
+              'DESC&force_infinite=1&category1=998&vrsupport=401&snr=1_7_7_230_7&infinite=1'.format(infinite_scrolling)
+        json_data = json.loads(requests.get(url).text)
+        if json_data["results_html"] == "\r\n<!-- List Items -->\r\n<!-- End List Items -->\r\n":
+            return games
+        tree = html.fromstring(json_data["results_html"])
+        appid_list = tree.xpath('//a/@data-ds-appid')
+        game_list = tree.xpath('//span[@class="title"]/text()')
+        for appid, game in zip(appid_list, game_list):
+            existing_appid = sql.get_appid(appid)
+            if existing_appid is None:
+                print("Appid:", appid, "Game:", game)
+                games.append((appid, game))
+            else:
+                return games
+        infinite_scrolling += 50
 
 
 def get_vrgames_players(appid):
@@ -53,6 +66,9 @@ def get_vrgames_players(appid):
 def number_of_players(games):
     """Shows a progress bar and returns a list with the number of players of each VR game"""
     player_numbers = []
+    if not games:
+        return player_numbers
+    print("The data is determined via web crawling which can take a long time.")
     progressbar = tqdm(total=len(games))  # Displays a progress bar
     for game in games:
         appid = game[0]
@@ -78,14 +94,9 @@ def update_required():
         update = True
     elif last_update < last_day_of_the_previous_month:
         update = True
+    if update:
+        print("The database will be updated.")
     return update
-
-
-def update_database(games, numbers):
-    """adds the games and player numbers to the database"""
-    sql.reset()
-    sql.add_game(games)
-    sql.add_players(numbers)
 
 
 def main():
@@ -95,16 +106,19 @@ def main():
     www.vrlfg.net (appid of all VR games) using the Requests and JSON library.
     The information is then stored in an SQLite database.
     """
-    if update_required():
-        print("The database will be updated.")
-        games = get_vrgames_vrlfg()
-        print("The data is determined via web crawling which can take a long time.")
-        numbers = number_of_players(games)
-        update_database(games, numbers)
-        print("The database was successfully updated.")
-    else:
-        print("The database is up-to-date, no update is required.")
+    print("Checking if new VR games are available.")
+    games = get_new_vrgames_steam()
+    sql.add_game(games)
+    update = update_required()
+    if update:
+        games = sql.get_all_games()
+    numbers = number_of_players(games)
+    if update:
+        sql.reset()
+    sql.add_players(numbers)
     sql.close_database()
+    if not update and not games:
+        print("The database is up-to-date, no update is required.")
 
 
 if __name__ == "__main__":

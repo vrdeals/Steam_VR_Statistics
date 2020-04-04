@@ -14,6 +14,18 @@ def create_database():
          (appid integer NOT NULL, date text NOT NULL, players integer)''')
 
 
+def get_all_games(appid):
+    """Checks if an appid is already available"""
+    c.execute("select * from vr_games")
+    return c.fetchall()
+
+
+def get_appid(appid):
+    """Checks if an appid is already available"""
+    c.execute(f'select * from vr_games where appid={appid}')
+    return c.fetchone()
+
+
 def add_game(val):
     """Adds games to the database."""
     with conn:
@@ -27,9 +39,8 @@ def add_players(val):
 
 
 def reset():
-    """Deletes the contents of the tables."""
+    """Deletes the content of the table."""
     with conn:
-        c.execute('DELETE FROM vr_games;')
         c.execute('DELETE FROM vr_players;')
 
 
