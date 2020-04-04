@@ -9,7 +9,7 @@ import sql_query as sql
 
 
 def check_appids_existing(appid_list, game_list):
-    """Checks if the appid already exists in the database"""
+    """Checks if the appid does not yet exist in the database"""
     games = []
     for appid, game in zip(appid_list, game_list):
         existing_appid = sql.get_appid(appid)
