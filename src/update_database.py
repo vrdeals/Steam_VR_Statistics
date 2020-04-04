@@ -17,7 +17,6 @@ def get_new_vrgames_steam():
               f'&count=50&dynamic_data=&sort_by=Released_DESC&force_infinite=1' \
               f'&category1=998&vrsupport=401&snr=1_7_7_230_7&infinite=1'
         json_data = json.loads(requests.get(url).text)
-        print(url)
         if json_data["results_html"] == "\r\n<!-- List Items -->\r\n<!-- End List Items -->\r\n":
             return games
         tree = html.fromstring(json_data["results_html"])
@@ -104,8 +103,8 @@ def update_required():
 def main():
     """
     Determines all Steam VR only games and the number of players.
-    The required information is obtained from https://steamdb.info (number of daily players) and
-    www.vrlfg.net (appid of all VR games) using the Requests and JSON library.
+    The required information is obtained from https://store.steampowered.com (appid of all VR games)
+    and https://steamdb.info (number of daily players) using the Requests, JSON and lxml library.
     The information is then stored in an SQLite database.
     """
     print("Checking if new VR games are available.")

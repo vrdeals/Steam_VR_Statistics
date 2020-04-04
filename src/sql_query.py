@@ -14,7 +14,7 @@ def create_database():
          (appid integer NOT NULL, date text NOT NULL, players integer)''')
 
 
-def get_all_games(appid):
+def get_all_games():
     """Checks if an appid is already available"""
     c.execute("select * from vr_games")
     return c.fetchall()
@@ -28,8 +28,9 @@ def get_appid(appid):
 
 def add_game(val):
     """Adds games to the database."""
-    with conn:
-        c.executemany('INSERT INTO vr_games(appid,title) VALUES (?,?)', val)
+    if val:
+        with conn:
+            c.executemany('INSERT INTO vr_games(appid,title) VALUES (?,?)', val)
 
 
 def add_players(val):
