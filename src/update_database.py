@@ -1,34 +1,43 @@
 """Requires Python 3.8 or higher and the external libraries Requests, lxml and tqdm."""
-from lxml import html
 import json
 from datetime import datetime, date, timedelta
 import time
+from lxml import html
 import requests
 from tqdm import tqdm
 import sql_query as sql
 
 
-def get_new_vrgames_steam():
-    """Returns the appid and name of all new steam VR games with a vr only tag, sorted by release date(desc)"""
-    infinite_scrolling = 0
+def check_appids_existing(appid_list, game_list):
+    """Checks if the appid already exists in the database"""
     games = []
+    for appid, game in zip(appid_list, game_list):
+        existing_appid = sql.get_appid(appid)
+        if existing_appid is None:
+            print("Appid:", appid, "Game:", game)
+            games.append((appid, game))
+    return games
+
+
+def get_new_vrgames_steam():
+    """Returns the appid and name of new steam VR only games, sorted by release date(desc)"""
+    infinite_scrolling = 0
+    new_games = []
     while True:
         url = f'https://store.steampowered.com/search/results/?query&start={infinite_scrolling}' \
               f'&count=50&dynamic_data=&sort_by=Released_DESC&force_infinite=1' \
               f'&category1=998&vrsupport=401&snr=1_7_7_230_7&infinite=1'
         json_data = json.loads(requests.get(url).text)
         if json_data["results_html"] == "\r\n<!-- List Items -->\r\n<!-- End List Items -->\r\n":
-            return games
+            return new_games
         tree = html.fromstring(json_data["results_html"])
         appid_list = tree.xpath('//a/@data-ds-appid')
         game_list = tree.xpath('//span[@class="title"]/text()')
-        for appid, game in zip(appid_list, game_list):
-            existing_appid = sql.get_appid(appid)
-            if existing_appid is None:
-                print("Appid:", appid, "Game:", game)
-                games.append((appid, game))
-            else:
-                return games
+        games = check_appids_existing(appid_list, game_list)
+        if games:
+            new_games.extend(games)
+        else:
+            return new_games
         infinite_scrolling += 50
 
 
