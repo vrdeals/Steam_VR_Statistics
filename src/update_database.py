@@ -11,7 +11,7 @@ import sql_query as sql
 
 
 def get_new_vrgames_steam():
-    """Get the appid and name of all new steam VR games with a vr only tag, sorted by release date(desc)"""
+    """Returns the appid and name of all new steam VR games with a vr only tag, sorted by release date(desc)"""
     infinite_scrolling = 0
     games = []
     while True:
