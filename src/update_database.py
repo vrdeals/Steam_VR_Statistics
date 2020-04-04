@@ -41,10 +41,23 @@ def get_new_vrgames_steam():
     return new_games
 
 
+def date_each_day(appid, json_data):
+    """Determines the date for each day of a game."""
+    players_date = []
+    time_stamp = int(json_data["data"]["start"])
+    step = int(json_data["data"]["step"])
+    players_list = json_data["data"]["values"]
+    for players_number in players_list:
+        if players_number is not None and players_number > 0:
+            date_daily_peak = datetime.utcfromtimestamp(time_stamp).strftime('%Y-%m-%d')
+            players_date.append((appid, date_daily_peak, players_number))
+        time_stamp += step
+    return players_date
+
+
 def get_vrgames_players(appid):
     """Get the number of players of a game for each day since release."""
     players = []
-    players_list = []
     url = f'https://steamdb.info/api/GetGraph/?type=concurrent_max&appid={appid}'
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) "
@@ -55,21 +68,12 @@ def get_vrgames_players(appid):
         "Accept-Charset": "ISO-8859-1,utf-8;q=0.7,*;q=0.3"
     }
     json_data = json.loads(requests.get(url, headers=headers).text)
-    success = json_data["success"]
-    if success:
-        players_list = json_data["data"]["values"]
+    if json_data["success"]:
+        players = date_each_day(appid, json_data)
     elif "Please do not crawl" in json_data["error"]:
         tqdm.write("\nThe program is waiting 400 seconds because the website prevents web crawling")
         time.sleep(400)   # The website prevents fast web crawling, therefore the waiting time.
         get_vrgames_players(appid)
-    if players_list:
-        time_stamp = int(json_data["data"]["start"])
-        step = int(json_data["data"]["step"])
-        for players_number in players_list:
-            if players_number is not None and players_number > 0:
-                date_daily_peak = datetime.utcfromtimestamp(time_stamp).strftime('%Y-%m-%d')
-                players.append((appid, date_daily_peak, players_number))
-            time_stamp += step
     return players
 
 
