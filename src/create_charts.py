@@ -1,4 +1,4 @@
-"""The external libraries matplotlib, seaborn and pandas must be installed."""
+"""Requires the external libraries matplotlib, seaborn and pandas."""
 from datetime import date, timedelta
 import pandas as pd
 import seaborn as sns

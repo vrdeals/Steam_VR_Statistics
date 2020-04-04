@@ -1,6 +1,4 @@
-"""
-Requires Python 3.8 or higher and the external libraries Requests, lxml and tqdm.
-"""
+"""Requires Python 3.8 or higher and the external libraries Requests, lxml and tqdm."""
 from lxml import html
 import json
 from datetime import datetime, date, timedelta
