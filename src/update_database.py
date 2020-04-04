@@ -112,13 +112,13 @@ def main():
     update = update_required()
     if update:
         games = sql.get_all_games()
+    elif not games:
+        print("The database is up-to-date, no update is required.")
     numbers = number_of_players(games)
-    if update:
+    if numbers and update:
         sql.reset()
     sql.add_players(numbers)
     sql.close_database()
-    if not update and not games:
-        print("The database is up-to-date, no update is required.")
 
 
 if __name__ == "__main__":
