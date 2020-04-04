@@ -110,16 +110,16 @@ def main():
     The information is then stored in an SQLite database.
     """
     print("Checking if new VR games are available.")
-    if games := get_new_vrgames_steam():
-        sql.add_game(games)
+    games = get_new_vrgames_steam()
+    sql.add_game(games)
     if update := update_required():
         games = sql.get_all_games()
     elif not games:
         print("The database is up-to-date, no update is required.")
-    if numbers := number_of_players(games) and update:
+    numbers = number_of_players(games)
+    if update:
         sql.reset()
-    if numbers:
-        sql.add_players(numbers)
+    sql.add_players(numbers)
     sql.close_database()
 
 
