@@ -118,7 +118,8 @@ def main():
         print("The database is up-to-date, no update is required.")
     if numbers := number_of_players(games) and update:
         sql.reset()
-    sql.add_players(numbers)
+    if numbers:
+        sql.add_players(numbers)
     sql.close_database()
 
 
