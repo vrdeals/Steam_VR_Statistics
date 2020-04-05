@@ -38,7 +38,7 @@ def add_players(val):
         c.executemany('''INSERT INTO vr_players(appid,date,players) VALUES(?,?,?)''', val)
 
 
-def reset():
+def reset_players():
     """Deletes the content of the table."""
     with conn:
         c.execute('DELETE FROM vr_players;')

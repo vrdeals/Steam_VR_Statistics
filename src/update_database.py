@@ -130,7 +130,7 @@ def main():
         sql.add_game(games)
         games = sql.get_all_games()
         numbers = number_of_players(games)
-        sql.reset()
+        sql.reset_players()
         sql.add_players(numbers)
     sql.close_database()
 
