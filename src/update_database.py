@@ -99,7 +99,7 @@ def number_of_players(games):
 
 
 def update_required():
-    """Checks if the last update is older than the last day of the previous month."""
+    """Returns True if the last update is older than the last day of the previous month."""
     update = False
     today = date.today()
     first_day_this_month = date(today.year, today.month, 1)
@@ -125,7 +125,6 @@ def main():
     and https://steamdb.info (number of daily players) using the Requests, JSON and lxml library.
     The information is then stored in an SQLite database.
     """
-
     if update_required():
         games = get_new_vrgames_steam()
         sql.add_game(games)
