@@ -166,7 +166,7 @@ def main():
     create_line_charts(first_day)
     create_bar_charts(first_day)
     sql.close_database()
-    plt.show()                # Displays the charts
+    plt.show()  # Displays the charts
     print("The charts were successfully saved in the images folder.")
 
 
