@@ -82,10 +82,8 @@ def get_vrgames_players(appid):
 
 def number_of_players(games):
     """Shows a progress bar and returns a list with the number of players of each VR game"""
-    player_numbers = []
-    if not games:
-        return player_numbers
     print("The data is determined via web crawling which can take a long time.")
+    player_numbers = []
     progressbar = tqdm(total=len(games))  # Displays a progress bar
     for game in games:
         appid = game[0]
