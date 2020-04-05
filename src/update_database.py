@@ -23,9 +23,9 @@ def check_appids_exist(appid_list, game_list):
 
 def get_new_vrgames_steam():
     """Returns the appid and name of new steam VR only games, sorted by release date(desc)"""
+    print("Checking if new VR games are available.")
     infinite_scrolling = 0
     new_games = []
-    print("Checking if new VR games are available.")
     while True:
         url = f'https://store.steampowered.com/search/results/?query&start={infinite_scrolling}' \
               f'&count=50&dynamic_data=&sort_by=Released_DESC&force_infinite=1' \
