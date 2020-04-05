@@ -25,6 +25,7 @@ def get_new_vrgames_steam():
     """Returns the appid and name of new steam VR only games, sorted by release date(desc)"""
     infinite_scrolling = 0
     new_games = []
+    print("Checking if new VR games are available.")
     while True:
         url = f'https://store.steampowered.com/search/results/?query&start={infinite_scrolling}' \
               f'&count=50&dynamic_data=&sort_by=Released_DESC&force_infinite=1' \
@@ -112,6 +113,8 @@ def update_required():
         update = True
     if update:
         print("The database will be updated.")
+    else:
+        print("The database is up-to-date, no update is required.")
     return update
 
 
@@ -122,17 +125,14 @@ def main():
     and https://steamdb.info (number of daily players) using the Requests, JSON and lxml library.
     The information is then stored in an SQLite database.
     """
-    print("Checking if new VR games are available.")
-    games = get_new_vrgames_steam()
-    sql.add_game(games)
-    if update := update_required():
+
+    if update_required():
+        games = get_new_vrgames_steam()
+        sql.add_game(games)
         games = sql.get_all_games()
-    elif not games:
-        print("The database is up-to-date, no update is required.")
-    numbers = number_of_players(games)
-    if update:
+        numbers = number_of_players(games)
         sql.reset()
-    sql.add_players(numbers)
+        sql.add_players(numbers)
     sql.close_database()
 
 
