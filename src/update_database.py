@@ -95,8 +95,7 @@ def number_of_players(games):
     print("The data is determined via web crawling which can take up to 1 hour.")
     player_numbers = []
     progressbar = tqdm(total=len(games))  # Displays a progress bar
-    for game in games:
-        appid = game[0]
+    for appid, *_ in games:
         players = get_vrgames_players(appid)
         if players is not None and players:
             player_numbers.extend(players)
