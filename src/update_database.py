@@ -122,7 +122,7 @@ def update_required():
     if update:
         print("The database will be updated.")
     else:
-        print(f"The database is up-to-date, no update is required.\n"
+        print(f"The database is up-to-date, no update is required. \n"
               f"Next update will be on {first_day_next_month}.")
     return update
 
