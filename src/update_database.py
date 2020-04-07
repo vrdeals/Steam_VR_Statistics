@@ -6,6 +6,7 @@ from lxml import html
 import requests
 from tqdm import tqdm
 import sql_query as sql
+import sys
 
 
 def check_appids_exist(appid_list, game_list):
@@ -44,6 +45,15 @@ def get_new_vrgames_steam():
     return new_games
 
 
+def countdown(duration):
+    for remaining in range(duration, 0, -1):
+        sys.stdout.write("\r")
+        sys.stdout.write(f"The program is waiting {remaining:2d} seconds because the website prevents web crawling.")
+        sys.stdout.flush()
+        time.sleep(1)
+    # sys.stdout.write("\r\n")
+
+
 def date_each_day(appid, json_data):
     """Determines the date for each day of a game."""
     players_each_day = []
@@ -74,15 +84,15 @@ def get_vrgames_players(appid):
     if json_data["success"]:
         players = date_each_day(appid, json_data)
     elif "Please do not crawl" in json_data["error"]:
-        tqdm.write("\nThe program is waiting 400 seconds because the website prevents web crawling")
-        time.sleep(400)   # The website prevents fast web crawling, therefore the waiting time.
+        # tqdm.write("\nThe program is waiting 400 seconds because the website prevents web crawling")
+        countdown(400)   # The website prevents fast web crawling, therefore the waiting time.
         get_vrgames_players(appid)
     return players
 
 
 def number_of_players(games):
     """Shows a progress bar and returns a list with the number of players of each VR game"""
-    print("The data is determined via web crawling which can take a long time.")
+    print("The data is determined via web crawling which can take up to 1 hour.")
     player_numbers = []
     progressbar = tqdm(total=len(games))  # Displays a progress bar
     for game in games:
@@ -98,7 +108,7 @@ def number_of_players(games):
 
 def update_required():
     """Returns True if the last update is older than the last day of the previous month."""
-    update = False
+    update = True
     today = date.today()
     first_day_this_month = date(today.year, today.month, 1)
     last_day_of_the_previous_month = first_day_this_month - timedelta(1)
@@ -116,6 +126,12 @@ def update_required():
     return update
 
 
+def update_database(numbers):
+    sql.reset_players()
+    sql.add_players(numbers)
+    print("The database was successfully updated.")
+
+
 def main():
     """
     Determines all Steam VR only games and the number of players.
@@ -128,8 +144,7 @@ def main():
         sql.add_game(games)
         games = sql.get_all_games()
         numbers = number_of_players(games)
-        sql.reset_players()
-        sql.add_players(numbers)
+        update_database(numbers)
     sql.close_database()
 
 
