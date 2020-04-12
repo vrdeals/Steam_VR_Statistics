@@ -48,15 +48,15 @@ def change_game_title(sql_result):
     return games_list
 
 
-def line_chart(sql_result, chart_title, legend=""):
+def line_chart_plot(sql_result, chart_title, legend=""):
     """Creates a line chart which with the matplotlib library."""
     date_x = []
     players_y = []
     location = "upper left"
-    for date_, players in sql_result:
-        if len(date_) > 2:
-            date_ = parser.parse(date_)  # formatting string into date
-        date_x.append(date_)
+    for daily_date, players in sql_result:
+        if len(daily_date) > 2:
+            daily_date = parser.parse(daily_date)  # formatting string into date
+        date_x.append(daily_date)
         players_y.append(players)
     plt.title(chart_title)
     if legend:
@@ -67,14 +67,14 @@ def line_chart(sql_result, chart_title, legend=""):
     plt.grid(True)
 
 
-def create_line_charts(first_day):
+def line_charts(first_day):
     """Creates the line charts with the data from the sql queries and saves them"""
 
     # Chart 1
     chart_title = "Steam VR usage of all VR games based on the monthly average" \
                   " of the daily peak values"
     sql_result = sql.peak_players()
-    line_chart(sql_result, chart_title)
+    line_chart_plot(sql_result, chart_title)
     plt.savefig('../images/avg_peak_over_time.png')
 
     # Chart 2
@@ -84,7 +84,7 @@ def create_line_charts(first_day):
     months = ("2020-01", "2020-02", "2020-03")
     for month in months:
         sql_result = sql.max_peak_players_monthly(month)
-        line_chart(sql_result, chart_title, month)
+        line_chart_plot(sql_result, chart_title, month)
     plt.savefig('../images/monthly_vrusage.png')
 
     # Chart 3
@@ -92,7 +92,7 @@ def create_line_charts(first_day):
     chart_title = "The number of concurrent users on Steam VR for some games"
     sql_result = sql.top10_previous_month(first_day)
     for appid, name, *_ in sql_result[1:7]:
-        line_chart(sql.max_peak_players(appid), chart_title, name)
+        line_chart_plot(sql.max_peak_players(appid), chart_title, name)
     plt.savefig('../images/max_peak.png')
 
 
@@ -163,7 +163,7 @@ def main():
     print("The charts will be created which can take a few seconds.")
     layout()
     first_day = first_day_previous_month()
-    create_line_charts(first_day)
+    line_charts(first_day)
     create_bar_charts(first_day)
     sql.close_database()
     plt.show()  # Displays the charts
