@@ -65,6 +65,7 @@ def line_chart_plot(sql_result, chart_title, legend=""):
     else:
         plt.plot(date_x, players_y)
     plt.grid(True)
+    # plt.tight_layout()
 
 
 def line_charts(first_day):
