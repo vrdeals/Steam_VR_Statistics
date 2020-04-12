@@ -112,7 +112,6 @@ def update_required():
     first_day_this_month = date(today.year, today.month, 1)
     last_day_of_the_previous_month = first_day_this_month - timedelta(1)
     last_day_of_the_previous_month = last_day_of_the_previous_month.strftime("%Y-%m-%d")
-    first_day_next_month = (today.replace(day=1) + timedelta(days=32)).replace(day=1)
     sql.create_database()
     last_update = sql.last_update()
     if last_update is None:
@@ -122,8 +121,8 @@ def update_required():
     if update:
         print("The database will be updated.")
     else:
-        print(f"The database is up-to-date, no update is required. \n"
-              f"Next update will be on {first_day_next_month}.")
+        first_day_next_month = (today.replace(day=1) + timedelta(days=32)).replace(day=1)
+        print(f"The database is up-to-date, next update will be on {first_day_next_month}.")
     return update
 
 
