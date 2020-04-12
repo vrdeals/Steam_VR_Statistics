@@ -50,20 +50,20 @@ def change_game_title(sql_result):
 
 def line_chart(sql_result, chart_title, legend=""):
     """Creates a line chart which with the matplotlib library."""
-    dates_list = []
-    players_list = []
+    date_x = []
+    players_y = []
     location = "upper left"
-    for date_data, players in sql_result:
-        if len(date_data) > 2:
-            date_data = parser.parse(date_data)  # formatting string into date
-        dates_list.append(date_data)
-        players_list.append(players)
+    for date_, players in sql_result:
+        if len(date_) > 2:
+            date_ = parser.parse(date_)  # formatting string into date
+        date_x.append(date_)
+        players_y.append(players)
     plt.title(chart_title)
     if legend:
-        plt.plot(dates_list, players_list, label=legend)
+        plt.plot(date_x, players_y, label=legend)
         plt.legend(loc=location)
     else:
-        plt.plot(dates_list, players_list)
+        plt.plot(date_x, players_y)
     plt.grid(True)
 
 
