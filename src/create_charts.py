@@ -97,7 +97,7 @@ def line_charts(first_day):
     plt.savefig('../images/max_peak.png')
 
 
-def bar_chart(sql_result, chart_title, labels):
+def bar_chart_plot(sql_result, chart_title, labels):
     """Creates a chart of the 10 most used VR games since 2020 with the seaborn library."""
 
     # Defines the used graphic style and reduces the text size to fit all information on the chart
@@ -135,27 +135,27 @@ def bar_chart(sql_result, chart_title, labels):
     sns.despine(left=True, bottom=True)
 
 
-def create_bar_charts(first_day):
+def bar_charts(starting_date):
     """Creates the bar charts with the data from the sql queries and saves them"""
 
     # Chart 1
-    previous_month = first_day.strftime("%B %Y")
-    month = first_day.strftime("%B")
+    previous_month = starting_date.strftime("%B %Y")
+    month = starting_date.strftime("%B")
     chart_title = f"The most played Steam VR games in {previous_month}"
     labels = (f'The maximum number of concurrent users in {month}',
               f'The average daily peak in {month}')
-    sql_result = sql.top10_previous_month(first_day)
+    sql_result = sql.top10_previous_month(starting_date)
     sql_result = change_game_title(sql_result)
-    bar_chart(sql_result, chart_title, labels)
+    bar_chart_plot(sql_result, chart_title, labels)
     plt.savefig('../images/top10.png')
-    plt.savefig(f'../images/top10_{first_day.strftime("%Y_%m")}.png')
+    plt.savefig(f'../images/top10_{starting_date.strftime("%Y_%m")}.png')
 
     # Chart 2
     sql_result = sql.top10()
     sql_result = change_game_title(sql_result)
     chart_title = "Steam VR games with the highest number of concurrent users since 2016"
     labels = ("The maximum number of concurrent users", "")
-    bar_chart(sql_result, chart_title, labels)
+    bar_chart_plot(sql_result, chart_title, labels)
     plt.savefig('../images/top10_max_peak.png')
 
 
@@ -163,9 +163,9 @@ def main():
     """Generates Charts with the Matplotlib and Seaborn libraries."""
     print("The charts will be created which can take a few seconds.")
     layout()
-    first_day = first_day_previous_month()
-    line_charts(first_day)
-    create_bar_charts(first_day)
+    starting_date = first_day_previous_month()
+    line_charts(starting_date)
+    bar_charts(starting_date)
     sql.close_database()
     plt.show()  # Displays the charts
     print("The charts were successfully saved in the images folder.")
