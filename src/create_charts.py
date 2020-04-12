@@ -68,7 +68,7 @@ def line_chart_plot(sql_result, chart_title, legend=""):
     # plt.tight_layout()
 
 
-def line_charts(first_day):
+def line_charts(starting_date):
     """Creates the line charts with the data from the sql queries and saves them"""
 
     # Chart 1
@@ -91,7 +91,7 @@ def line_charts(first_day):
     # Chart 3
     plt.subplots()
     chart_title = "The number of concurrent users on Steam VR for some games"
-    sql_result = sql.top10_previous_month(first_day)
+    sql_result = sql.top10_previous_month(starting_date)
     for appid, name, *_ in sql_result[1:7]:
         line_chart_plot(sql.max_peak_players(appid), chart_title, name)
     plt.savefig('../images/max_peak.png')

@@ -107,20 +107,17 @@ def number_of_players(games):
 
 def update_required():
     """Returns True if the last update is older than the last day of the previous month."""
-    update = False
     today = date.today()
     first_day_this_month = date(today.year, today.month, 1)
     last_day_of_the_previous_month = first_day_this_month - timedelta(1)
     last_day_of_the_previous_month = last_day_of_the_previous_month.strftime("%Y-%m-%d")
     sql.create_database()
     last_update = sql.last_update()
-    if last_update is None:
+    if last_update is None or last_update < last_day_of_the_previous_month:
         update = True
-    elif last_update < last_day_of_the_previous_month:
-        update = True
-    if update:
         print("The database will be updated.")
     else:
+        update = False
         first_day_next_month = (today.replace(day=1) + timedelta(days=32)).replace(day=1)
         print(f"The database is up-to-date, next update will be on {first_day_next_month}.")
     return update
