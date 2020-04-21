@@ -15,7 +15,7 @@ def create_database():
 
 
 def get_all_games():
-    """Checks if an appid is already available"""
+    """Returns all VR Games as a list"""
     c.execute("select * from vr_games")
     return c.fetchall()
 
