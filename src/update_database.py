@@ -1,11 +1,13 @@
 """Requires the external libraries Requests, lxml and tqdm."""
 import json
-from datetime import datetime, date, timedelta
-import time
 import sys
-from lxml import html
+import time
+from datetime import datetime, date, timedelta
+
 import requests
+from lxml import html
 from tqdm import tqdm
+
 import sql_query as sql
 
 
@@ -13,7 +15,7 @@ def check_appids_exist(appid_list, game_list):
     """Checks if the appid does not exist in the database and blacklist"""
     games = []
     blacklist = (692530, 450110, 422100, 577890, 587710, 516950, 612250, 547040,
-                 547040, 607440, 604830)    # outliers
+                 547040, 607440, 604830, 272230)    # outliers
     for appid, game in zip(appid_list, game_list):
         existing_appid = sql.get_appid(appid)
         if appid not in blacklist and existing_appid is None:
@@ -74,10 +76,11 @@ def get_vrgames_players(appid):
     players = []
     url = f'https://steamdb.info/api/GetGraph/?type=concurrent_max&appid={appid}'
     headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) "
-                      "Chrome/30.0.1599.101 Safari/537.36",
-        "Accept-Language": "fr-FR,fr;q=0.8,en-US;q=0.6,en;q=0.4",
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                      "(KHTML, like Gecko) Chrome/81.0.4044.129 Safari/537.3",
+        "Accept-Language": "de-DE,de;q=0.9,en-US;q=0.8,en;q=0.7",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,"
+                  "image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
         "Connection": "keep-alive",
         "Accept-Charset": "ISO-8859-1,utf-8;q=0.7,*;q=0.3"
     }
@@ -95,7 +98,9 @@ def number_of_players(games):
     print("The data is determined via web crawling which can take up to 1 hour.")
     player_numbers = []
     progressbar = tqdm(total=len(games))  # Displays a progress bar
+    games_collected = 0
     for appid, *_ in games:
+        games_collected += 1
         players = get_vrgames_players(appid)
         if players is not None and players:
             player_numbers.extend(players)

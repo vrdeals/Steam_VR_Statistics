@@ -1,10 +1,12 @@
 """Requires the external libraries matplotlib, seaborn and pandas."""
 from datetime import date, timedelta
+
 import pandas as pd
 import seaborn as sns
 from dateutil import parser
 from matplotlib import pyplot as plt, style, pylab as pylab
 from matplotlib.ticker import MultipleLocator
+
 import sql_query as sql
 
 
@@ -82,7 +84,7 @@ def line_charts(starting_date):
     plt.subplots()
     chart_title = "VR usage of the last 3 months based on the daily " \
                   "peak values of all Steam VR only games"
-    months = ("2020-01", "2020-02", "2020-03")
+    months = ("2020-02", "2020-03", "2020-04")
     for month in months:
         sql_result = sql.max_peak_players_monthly(month)
         line_chart_plot(sql_result, chart_title, month)
@@ -126,6 +128,8 @@ def bar_chart_plot(sql_result, chart_title, labels):
     # Plot the average number of players
     if labels[1]:
         sns.set_color_codes("muted")
+        scaling_xaxis = 500
+        ax.xaxis.set_major_locator(MultipleLocator(scaling_xaxis))
         fig = sns.barplot(x="avg_players", y="game", data=top10, label=labels[1], color="b")
         fig.set_xlabel("")
         fig.set_ylabel("")
