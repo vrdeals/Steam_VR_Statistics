@@ -82,9 +82,9 @@ def line_charts(starting_date):
 
     # Chart 2
     plt.subplots()
-    chart_title = "VR usage of the last 3 months based on the daily " \
+    chart_title = "VR usage of the last 6 months based on the daily " \
                   "peak values of all Steam VR only games"
-    months = ("2020-02", "2020-03", "2020-04")
+    months = ("2019-11", "2019-12", "2020-01", "2020-02", "2020-03", "2020-04")
     for month in months:
         sql_result = sql.max_peak_players_monthly(month)
         line_chart_plot(sql_result, chart_title, month)
