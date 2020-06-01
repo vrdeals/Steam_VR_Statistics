@@ -84,7 +84,7 @@ def line_charts(starting_date):
     plt.subplots()
     chart_title = "VR usage of the last 6 months based on the daily " \
                   "peak values of all Steam VR only games"
-    months = ("2019-11", "2019-12", "2020-01", "2020-02", "2020-03", "2020-04")
+    months = ("2019-12", "2020-01", "2020-02", "2020-03", "2020-04", "2020-05")
     for month in months:
         sql_result = sql.max_peak_players_monthly(month)
         line_chart_plot(sql_result, chart_title, month)
@@ -94,8 +94,9 @@ def line_charts(starting_date):
     plt.subplots()
     chart_title = "The number of concurrent users on Steam VR for some games"
     sql_result = sql.top10_previous_month(starting_date)
-    for appid, name, *_ in sql_result[1:7]:
-        line_chart_plot(sql.max_peak_players(appid), chart_title, name)
+    for appid, name, *_ in sql_result[0:8]:
+        if appid != 546560 and appid != 823500:
+            line_chart_plot(sql.max_peak_players(appid), chart_title, name)
     plt.savefig('../images/max_peak.png')
 
 
@@ -128,7 +129,7 @@ def bar_chart_plot(sql_result, chart_title, labels):
     # Plot the average number of players
     if labels[1]:
         sns.set_color_codes("muted")
-        scaling_xaxis = 500
+        scaling_xaxis = 200
         ax.xaxis.set_major_locator(MultipleLocator(scaling_xaxis))
         fig = sns.barplot(x="avg_players", y="game", data=top10, label=labels[1], color="b")
         fig.set_xlabel("")
