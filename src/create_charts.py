@@ -74,8 +74,8 @@ def line_charts(starting_date):
     """Creates the line charts with the data from the sql queries and saves them"""
 
     # Chart 1
-    chart_title = "Steam VR usage of all VR games based on the monthly average" \
-                  " of the daily peak values"
+    chart_title = "Steam VR usage based on the monthly average " \
+                  "of the daily maximum number of concurrent users (sum of all VR only games)"
     sql_result = sql.peak_players()
     line_chart_plot(sql_result, chart_title)
     plt.savefig('../images/avg_peak_over_time.png')
