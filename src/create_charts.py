@@ -1,5 +1,7 @@
 """Requires the external libraries matplotlib, seaborn and pandas."""
 from datetime import date, timedelta
+import json
+from pathlib import Path
 
 import pandas as pd
 import seaborn as sns
@@ -50,6 +52,18 @@ def change_game_title(sql_result):
     return games_list
 
 
+def create_json_file(sql_result, file_name):
+    data = []
+    for x, y in sql_result:
+        data.append({
+            'x': x,
+            'y': round(y)
+        })
+    json_path = Path.cwd().parent.joinpath("js_charts", file_name)
+    with json_path.open(mode='w') as outfile:
+        json.dump(data, outfile, indent=4)
+
+
 def line_chart_plot(sql_result, chart_title, legend=""):
     """Creates a line chart which with the matplotlib library."""
     date_x = []
@@ -60,6 +74,8 @@ def line_chart_plot(sql_result, chart_title, legend=""):
             daily_date = parser.parse(daily_date)  # formatting string into date
         date_x.append(daily_date)
         players_y.append(players)
+    # print(players_y)
+    # print(date_x)
     plt.title(chart_title)
     if legend:
         plt.plot(date_x, players_y, label=legend)
@@ -78,26 +94,27 @@ def line_charts(starting_date):
                   "of the daily maximum number of concurrent users (sum of all VR only games)"
     sql_result = sql.peak_players()
     line_chart_plot(sql_result, chart_title)
+    create_json_file(sql_result, "avg_peak_over_time.json")
     plt.savefig('../images/avg_peak_over_time.png')
 
-    # Chart 2
-    plt.subplots()
-    chart_title = "VR usage of the last 6 months based on the daily " \
-                  "peak values of all Steam VR only games"
-    months = ("2019-12", "2020-01", "2020-02", "2020-03", "2020-04", "2020-05")
-    for month in months:
-        sql_result = sql.max_peak_players_monthly(month)
-        line_chart_plot(sql_result, chart_title, month)
-    plt.savefig('../images/monthly_vrusage.png')
-
-    # Chart 3
-    plt.subplots()
-    chart_title = "The number of concurrent users on Steam VR for some games"
-    sql_result = sql.top10_previous_month(starting_date)
-    for appid, name, *_ in sql_result[0:8]:
-        if appid != 546560 and appid != 823500:
-            line_chart_plot(sql.max_peak_players(appid), chart_title, name)
-    plt.savefig('../images/max_peak.png')
+    # # Chart 2
+    # plt.subplots()
+    # chart_title = "VR usage of the last 6 months based on the daily " \
+    #               "peak values of all Steam VR only games"
+    # months = ("2019-12", "2020-01", "2020-02", "2020-03", "2020-04", "2020-05")
+    # for month in months:
+    #     sql_result = sql.max_peak_players_monthly(month)
+    #     line_chart_plot(sql_result, chart_title, month)
+    # plt.savefig('../images/monthly_vrusage.png')
+    #
+    # # Chart 3
+    # plt.subplots()
+    # chart_title = "The number of concurrent users on Steam VR for some games"
+    # sql_result = sql.top10_previous_month(starting_date)
+    # for appid, name, *_ in sql_result[0:8]:
+    #     if appid != 546560 and appid != 823500:
+    #         line_chart_plot(sql.max_peak_players(appid), chart_title, name)
+    # plt.savefig('../images/max_peak.png')
 
 
 def bar_chart_plot(sql_result, chart_title, labels):
