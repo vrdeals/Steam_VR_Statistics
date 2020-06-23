@@ -11,6 +11,8 @@ from matplotlib.ticker import MultipleLocator
 
 import sql_query as sql
 
+json_data = {}
+
 
 def layout():
     """Defines the basic layout for all charts"""
@@ -52,16 +54,20 @@ def change_game_title(sql_result):
     return games_list
 
 
-def create_json_file(sql_result, file_name):
+def create_json_file():
+    json_path = Path.cwd().parent.joinpath("js_charts", "data.json")
+    with json_path.open(mode='w') as outfile:
+        json.dump(json_data, outfile, indent=4)
+
+
+def update_json_data(sql_result, data_name):
     data = []
     for x, y in sql_result:
         data.append({
             'x': x,
             'y': round(y)
         })
-    json_path = Path.cwd().parent.joinpath("js_charts", file_name)
-    with json_path.open(mode='w') as outfile:
-        json.dump(data, outfile, indent=4)
+    json_data[data_name] = data
 
 
 def line_chart_plot(sql_result, chart_title, legend=""):
@@ -94,18 +100,18 @@ def line_charts(starting_date):
                   "of the daily maximum number of concurrent users (sum of all VR only games)"
     sql_result = sql.peak_players()
     line_chart_plot(sql_result, chart_title)
-    create_json_file(sql_result, "avg_peak_over_time.json")
+    update_json_data(sql_result, "steam_vr")
     plt.savefig('../images/avg_peak_over_time.png')
 
-    # # Chart 2
-    # plt.subplots()
-    # chart_title = "VR usage of the last 6 months based on the daily " \
-    #               "peak values of all Steam VR only games"
-    # months = ("2019-12", "2020-01", "2020-02", "2020-03", "2020-04", "2020-05")
-    # for month in months:
-    #     sql_result = sql.max_peak_players_monthly(month)
-    #     line_chart_plot(sql_result, chart_title, month)
-    # plt.savefig('../images/monthly_vrusage.png')
+    # Chart 2
+    plt.subplots()
+    chart_title = "VR usage of the last 6 months based on the daily " \
+                  "peak values of all Steam VR only games"
+    months = ("2019-12", "2020-01", "2020-02", "2020-03", "2020-04", "2020-05")
+    for month in months:
+        sql_result = sql.max_peak_players_monthly(month)
+        line_chart_plot(sql_result, chart_title, month)
+    plt.savefig('../images/monthly_vrusage.png')
     #
     # # Chart 3
     # plt.subplots()
@@ -189,6 +195,7 @@ def main():
     line_charts(starting_date)
     bar_charts(starting_date)
     sql.close_database()
+    create_json_file()
     plt.show()  # Displays the charts
     print("The charts were successfully saved in the images folder.")
 

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Steam VR Nutzung seit 2016</title>
+
+    <link href="styles.css" rel="stylesheet" />
+
+    <style>
+
+      #chart, #chart2 {
+        max-width: 650px;
+        margin: 35px auto;
+      }
+
+    </style>
+
+    <script>
+      window.Promise ||
+        document.write(
+          '<script src="https://cdn.jsdelivr.net/npm/promise-polyfill@8/dist/polyfill.min.js"><\/script>'
+        )
+      window.Promise ||
+        document.write(
+          '<script src="https://cdn.jsdelivr.net/npm/eligrey-classlist-js-polyfill@1.2.20171210/classList.min.js"><\/script>'
+        )
+      window.Promise ||
+        document.write(
+          '<script src="https://cdn.jsdelivr.net/npm/findindex_polyfill_mdn"><\/script>'
+        )
+    </script>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  </head>
+
+  <body>
+     <div id="chart"></div>
+     <div id="chart2"></div>
+
+    <script>
+
+        var options = {
+          series: [],
+          chart: {
+            height: 350,
+            type: 'line',
+            locales: [{
+              name: 'en',
+               options: {
+                 shortMonths: ['Jan', 'Feb', 'März', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'],
+               }
+            }],
+            zoom: {
+              enabled: false
+            },
+          },
+          colors: ['#d70e4a', '#77B6EA', '#545454'],
+          dataLabels: {
+            enabled: false
+          },
+          title: {
+            text: 'Steam VR Nutzung aller VR only Spiele',
+          },
+          noData: {
+            text: 'Loading...'
+          },
+          xaxis: {
+            type: 'datetime',
+            tickPlacement: 'on',
+          },
+          tooltip: {
+            x: {
+                format: 'MMM yyyy'
+            }
+          }
+        };
+
+        var chart = new ApexCharts(document.querySelector("#chart"), options);
+        chart.render();
+
+        var chart2 = new ApexCharts(document.querySelector("#chart2"), options);
+        chart2.render();
+
+
+        $.getJSON('data.json', function(data) {
+          chart.updateSeries([{
+            name: 'Maximale Anzahl gleichzeitiger Benutzer (monatlicher Durchschnitt)',
+            data: data["steam_vr"]
+          }])
+          chart2.updateSeries([{
+            name: 'Maximale Anzahl gleichzeitiger Benutzer (monatlicher Durchschnitt)',
+            data: data["steam_vr"]
+          }])
+        });
+
+    </script>
+
+
+  </body>
+</html>
