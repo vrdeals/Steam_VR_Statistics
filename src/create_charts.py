@@ -112,15 +112,15 @@ def line_charts(starting_date):
         sql_result = sql.max_peak_players_monthly(month)
         line_chart_plot(sql_result, chart_title, month)
     plt.savefig('../images/monthly_vrusage.png')
-    #
-    # # Chart 3
-    # plt.subplots()
-    # chart_title = "The number of concurrent users on Steam VR for some games"
-    # sql_result = sql.top10_previous_month(starting_date)
-    # for appid, name, *_ in sql_result[0:8]:
-    #     if appid != 546560 and appid != 823500:
-    #         line_chart_plot(sql.max_peak_players(appid), chart_title, name)
-    # plt.savefig('../images/max_peak.png')
+
+    # Chart 3
+    plt.subplots()
+    chart_title = "The number of concurrent users on Steam VR for some games"
+    sql_result = sql.top10_previous_month(starting_date)
+    for appid, name, *_ in sql_result[0:8]:
+        if appid != 546560 and appid != 823500:
+            line_chart_plot(sql.max_peak_players(appid), chart_title, name)
+    plt.savefig('../images/max_peak.png')
 
 
 def bar_chart_plot(sql_result, chart_title, labels):
