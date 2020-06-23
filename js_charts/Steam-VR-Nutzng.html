@@ -4,13 +4,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Steam VR Nutzung seit 2016</title>
+    <title>Steam VR Statistiken</title>
 
     <link href="styles.css" rel="stylesheet" />
 
     <style>
 
-      #chart, #chart2 {
+      #chart, #chart2, #chart3 {
         max-width: 650px;
         margin: 35px auto;
       }
@@ -42,6 +42,7 @@
   <body>
      <div id="chart"></div>
      <div id="chart2"></div>
+     <div id="chart3"></div>
 
     <script>
 
@@ -65,7 +66,10 @@
             enabled: false
           },
           title: {
-            text: 'Steam VR Nutzung aller VR only Spiele',
+            text: 'Steam VR Nutzung aller VR only Games',
+          },
+          stroke: {
+            width: 3,
           },
           noData: {
             text: 'Loading...'
@@ -84,19 +88,119 @@
         var chart = new ApexCharts(document.querySelector("#chart"), options);
         chart.render();
 
-        var chart2 = new ApexCharts(document.querySelector("#chart2"), options);
+        var options2 = {
+          series: [],
+          chart: {
+          height: 350,
+          type: 'line',
+          zoom: {
+            enabled: false
+          },
+        },
+        colors: ['#d70e4a', '#545454', '#77B6EA'],
+        dataLabels: {
+          enabled: false
+        },
+        stroke: {
+          width: [3, 3, 2],
+          curve: 'straight',
+          dashArray: [0, 8, 5]
+        },
+        title: {
+          text: 'Tägliche maximale Anzahl gleichzeitiger Benutzer',
+          align: 'left'
+        },
+        legend: {
+          tooltipHoverFormatter: function(val, opts) {
+            return val + ' - ' + opts.w.globals.series[opts.seriesIndex][opts.dataPointIndex] + ''
+          }
+        },
+        markers: {
+          size: 0,
+          hover: {
+            sizeOffset: 6
+          }
+        },
+        xaxis: {
+          categories: [],
+        },
+        grid: {
+          borderColor: '#f1f1f1',
+        }
+        };
+
+        var chart2 = new ApexCharts(document.querySelector("#chart2"), options2);
         chart2.render();
+
+        var options3 = {
+          series: [],
+            chart: {
+            type: 'bar',
+            height: 430,
+          },
+          plotOptions: {
+            bar: {
+              horizontal: true,
+              dataLabels: {
+                position: 'top',
+              },
+            }
+          },
+          colors: ['#d70e4a', '#545454'],
+          dataLabels: {
+            enabled: true,
+            offsetX: -6,
+            style: {
+              fontSize: '12px',
+              colors: ['#fff']
+            }
+          },
+          title: {
+            text: 'Steam VR Top 10 im Mai',
+            align: 'left'
+          },
+        };
+
+        var chart3 = new ApexCharts(document.querySelector("#chart3"), options3);
+        chart3.render();
 
 
         $.getJSON('data.json', function(data) {
-          chart.updateSeries([{
-            name: 'Maximale Anzahl gleichzeitiger Benutzer (monatlicher Durchschnitt)',
-            data: data["steam_vr"]
-          }])
-          chart2.updateSeries([{
-            name: 'Maximale Anzahl gleichzeitiger Benutzer (monatlicher Durchschnitt)',
-            data: data["steam_vr"]
-          }])
+          chart.updateSeries([
+            {
+              name: 'Maximal gleichzeitige Benutzer<br>monatlicher Durchschnitt',
+              data: data["steam_vr"]
+            }
+          ])
+          chart2.updateSeries([
+            {
+              name: "Mai 2020",
+              data: data["2020-05"]
+            },
+            {
+              name: "April 2020",
+              data: data["2020-04"]
+            },
+            {
+              name: "März 2020",
+              data: data["2020-03"]
+            }
+          ])
+          chart3.updateSeries([
+            {
+              name: "Maximal gleichzeitige Benutzer im Mai",
+              data: data["top10"]["max_players"]
+            },
+            {
+              name: "Durchschnittlicher Höchstwert",
+              data: data["top10"]["avg_players"]
+            }
+          ])
+          chart3.updateOptions({
+            xaxis: {
+              categories: data["top10"]["games"],
+            },
+          })
         });
 
     </script>

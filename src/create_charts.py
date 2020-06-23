@@ -60,14 +60,25 @@ def create_json_file():
         json.dump(json_data, outfile, indent=4)
 
 
-def update_json_data(sql_result, data_name):
+def update_json_data_line_charts(sql_result, data_name):
     data = []
-    for x, y in sql_result:
+    for date_, players in sql_result:
         data.append({
-            'x': x,
-            'y': round(y)
+            'x': date_,
+            'y': round(players)
         })
     json_data[data_name] = data
+
+
+def update_json_data_bar_charts(sql_result, data_name):
+    games = []
+    max_players = []
+    avg_players = []
+    for _, game, max_player, avg_player in sql_result:
+        games.append(game)
+        max_players.append(max_player)
+        avg_players.append(avg_player)
+    json_data[data_name] = {"games": games, "max_players": max_players, "avg_players": avg_players}
 
 
 def line_chart_plot(sql_result, chart_title, legend=""):
@@ -100,7 +111,7 @@ def line_charts(starting_date):
                   "of the daily maximum number of concurrent users (sum of all VR only games)"
     sql_result = sql.peak_players()
     line_chart_plot(sql_result, chart_title)
-    update_json_data(sql_result, "steam_vr")
+    update_json_data_line_charts(sql_result, "steam_vr")
     plt.savefig('../images/avg_peak_over_time.png')
 
     # Chart 2
@@ -111,6 +122,7 @@ def line_charts(starting_date):
     for month in months:
         sql_result = sql.max_peak_players_monthly(month)
         line_chart_plot(sql_result, chart_title, month)
+        update_json_data_line_charts(sql_result, month)
     plt.savefig('../images/monthly_vrusage.png')
 
     # Chart 3
@@ -175,6 +187,7 @@ def bar_charts(starting_date):
     sql_result = sql.top10_previous_month(starting_date)
     sql_result = change_game_title(sql_result)
     bar_chart_plot(sql_result, chart_title, labels)
+    update_json_data_bar_charts(sql_result, "top10")
     plt.savefig('../images/top10.png')
     plt.savefig(f'../images/top10_{starting_date.strftime("%Y_%m")}.png')
 

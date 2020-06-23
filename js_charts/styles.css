@@ -9,7 +9,7 @@ body {
     background: #f9f9f9;
 }
 
-#chart, #chart2, .chart-box {
+#chart, #chart2,  #chart3, .chart-box {
     padding-top: 20px;
     padding-left: 10px;
     background: #fff;
