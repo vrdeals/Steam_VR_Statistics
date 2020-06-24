@@ -165,40 +165,40 @@
         chart3.render();
 
 
-        $.getJSON('data.json', function(data) {
+        $.getJSON('https://vrdeals.github.io/statistics/data.json', function(response) {
           chart.updateSeries([
             {
               name: 'Maximal gleichzeitige Benutzer<br>monatlicher Durchschnitt',
-              data: data["steam_vr"]
+              data: response["steam_vr"]
             }
           ])
           chart2.updateSeries([
             {
               name: "Mai 2020",
-              data: data["2020-05"]
+              data: response["2020-05"]
             },
             {
               name: "April 2020",
-              data: data["2020-04"]
+              data: response["2020-04"]
             },
             {
               name: "März 2020",
-              data: data["2020-03"]
+              data: response["2020-03"]
             }
           ])
           chart3.updateSeries([
             {
               name: "Maximal gleichzeitige Benutzer im Mai",
-              data: data["top10"]["max_players"]
+              data: response["top10"]["max_players"]
             },
             {
               name: "Durchschnittlicher Höchstwert",
-              data: data["top10"]["avg_players"]
+              data: response["top10"]["avg_players"]
             }
           ])
           chart3.updateOptions({
             xaxis: {
-              categories: data["top10"]["games"],
+              categories: response["top10"]["games"],
             },
           })
         });
