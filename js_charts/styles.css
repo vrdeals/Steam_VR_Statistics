@@ -13,6 +13,7 @@ body {
     padding-top: 20px;
     padding-left: 10px;
     background: #fff;
+    background: 'url(/assets/img/some.svg)'
     border: 1px solid #ddd;
     box-shadow: 0 22px 35px -16px rgba(0,0,0, 0.1);
 }

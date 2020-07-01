@@ -118,7 +118,7 @@ def line_charts(starting_date):
     plt.subplots()
     chart_title = "VR usage of the last 6 months based on the daily " \
                   "peak values of all Steam VR only games"
-    months = ("2019-12", "2020-01", "2020-02", "2020-03", "2020-04", "2020-05")
+    months = ("2020-01", "2020-02", "2020-03", "2020-04", "2020-05", "2020-06")
     for month in months:
         sql_result = sql.max_peak_players_monthly(month)
         line_chart_plot(sql_result, chart_title, month)
@@ -186,6 +186,7 @@ def bar_charts(starting_date):
               f'The average daily peak in {month}')
     sql_result = sql.top10_previous_month(starting_date)
     sql_result = change_game_title(sql_result)
+    print(sql_result)
     bar_chart_plot(sql_result, chart_title, labels)
     update_json_data_bar_charts(sql_result, "top10")
     plt.savefig('../images/top10.png')

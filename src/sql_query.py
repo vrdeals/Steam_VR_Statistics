@@ -38,6 +38,11 @@ def add_players(val):
         c.executemany('''INSERT INTO vr_players(appid,date,players) VALUES(?,?,?)''', val)
 
 
+def delete_app(appid):
+    c.execute('DELETE FROM vr_players WHERE appid=?', (appid,))
+    c.execute('DELETE FROM vr_games WHERE appid=?', (appid,))
+
+
 def reset_players():
     """Deletes the content of the table."""
     with conn:
@@ -63,6 +68,19 @@ def top10():
     return c.fetchall()
 
 
+# def top10_previous_month(start_date):
+#     """Returns the 10 most played VR games from given date to end of last month as a list."""
+#     c.execute(f'''
+#     SELECT vr_players.appid, title, max(players) as Maxplayers, round(avg(players)) as Average from vr_players
+#     INNER JOIN vr_games ON vr_games.appid = vr_players.appid
+#     WHERE date >= '{start_date}'
+#     GROUP by vr_players.appid
+#     ORDER by Maxplayers DESC
+#     Limit 10
+#     ''')
+#     return c.fetchall()
+
+
 def top10_previous_month(start_date):
     """Returns the 10 most played VR games from given date to end of last month as a list."""
     c.execute(f'''
@@ -75,6 +93,19 @@ def top10_previous_month(start_date):
     ''')
     return c.fetchall()
 
+# def peak_players():
+#     """Returns the monthly average of the daily peak values since 2016-03 as a list."""
+#     c.execute('''
+#     Select new_date, sum(average) from (SELECT strftime('%Y-%m', date) as new_date,
+#     sum(players)/(julianday(date,'start of month','+1 month') - julianday(date,'start of month'))
+#     as average from vr_players
+#     WHERE date != '2019-07-24' and date > '2016-03'
+#     GROUP by appid, new_date
+#     ORDER by new_date)
+#     Group by new_date
+#     ''')
+#     return c.fetchall()
+
 
 def peak_players():
     """Returns the monthly average of the daily peak values since 2016-03 as a list."""
@@ -85,7 +116,6 @@ def peak_players():
     WHERE date != '2019-07-24' and date > '2016-03' and date < date('now','start of month')
     GROUP by appid, new_date
     ORDER by new_date)
-    WHERE average >= 1
     Group by new_date
     ''')
     return c.fetchall()

@@ -60,6 +60,9 @@
             zoom: {
               enabled: false
             },
+            toolbar: {
+            show: false,
+            },
           },
           colors: ['#d70e4a', '#77B6EA', '#545454'],
           dataLabels: {
@@ -96,6 +99,9 @@
           zoom: {
             enabled: false
           },
+           toolbar: {
+            show: false,
+           },
         },
         colors: ['#d70e4a', '#545454', '#77B6EA'],
         dataLabels: {
@@ -137,6 +143,9 @@
             chart: {
             type: 'bar',
             height: 430,
+            toolbar: {
+              show: false,
+            },
           },
           plotOptions: {
             bar: {
@@ -174,16 +183,16 @@
           ])
           chart2.updateSeries([
             {
+              name: "Juni 2020",
+              data: response["2020-06"]
+            },
+            {
               name: "Mai 2020",
               data: response["2020-05"]
             },
             {
               name: "April 2020",
               data: response["2020-04"]
-            },
-            {
-              name: "März 2020",
-              data: response["2020-03"]
             }
           ])
           chart3.updateSeries([
