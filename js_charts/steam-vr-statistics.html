@@ -121,12 +121,6 @@
             return val + ' - ' + opts.w.globals.series[opts.seriesIndex][opts.dataPointIndex] + ''
           }
         },
-        markers: {
-          size: 0,
-          hover: {
-            sizeOffset: 6
-          }
-        },
         xaxis: {
           categories: [],
         },
@@ -139,36 +133,32 @@
         chart2.render();
 
         var options3 = {
-          series: [],
-            chart: {
-            type: 'bar',
-            height: 430,
-            toolbar: {
-              show: false,
-            },
-          },
-          plotOptions: {
-            bar: {
-              horizontal: true,
-              dataLabels: {
-                position: 'top',
-              },
-            }
-          },
-          colors: ['#d70e4a', '#545454'],
-          dataLabels: {
-            enabled: true,
-            offsetX: -6,
-            style: {
-              fontSize: '12px',
-              colors: ['#fff']
-            }
-          },
-          title: {
-            text: 'Steam VR Top 10 im Mai',
-            align: 'left'
-          },
-        };
+                series: [],
+                    chart: {
+                    type: 'bar',
+                    height: 430,
+                    toolbar: {
+                        show: false,
+                    }
+                },
+                colors: ['#d70e4a', '#545454'],
+                noData: {
+                    text: 'Loading...'
+                },
+                dataLabels: {
+                    enabled: false,
+                    offsetX: -6,
+                    style: {
+                        fontSize: '12px',
+                        colors: ['#fff']
+                    }
+                },
+                title: {
+                    text: 'Steam VR Top 10 im Juni',
+                    align: 'left',
+                    margin: 10,
+                },
+            };
 
         var chart3 = new ApexCharts(document.querySelector("#chart3"), options3);
         chart3.render();
@@ -197,7 +187,7 @@
           ])
           chart3.updateSeries([
             {
-              name: "Maximal gleichzeitige Benutzer im Mai",
+              name: "Maximal gleichzeitige Benutzer im Juni",
               data: response["top10"]["max_players"]
             },
             {
