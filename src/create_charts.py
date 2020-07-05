@@ -181,7 +181,7 @@ def bar_charts(starting_date):
     # Chart 1
     previous_month = starting_date.strftime("%B %Y")
     month = starting_date.strftime("%B")
-    chart_title = f"The most played Steam VR games in {previous_month}"
+    chart_title = f"The most used Steam VR apps in {previous_month}"
     labels = (f'The maximum number of concurrent users in {month}',
               f'The average daily peak in {month}')
     sql_result = sql.top10_previous_month(starting_date)
