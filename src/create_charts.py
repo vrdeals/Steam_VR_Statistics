@@ -127,7 +127,7 @@ def line_charts(starting_date):
 
     # Chart 3
     plt.subplots()
-    chart_title = "The number of concurrent users on Steam VR for some games"
+    chart_title = "The number of concurrent users on Steam VR for some apps"
     sql_result = sql.top10_previous_month(starting_date)
     for appid, name, *_ in sql_result[0:8]:
         if appid != 546560 and appid != 823500:
@@ -195,7 +195,7 @@ def bar_charts(starting_date):
     # Chart 2
     sql_result = sql.top10()
     sql_result = change_game_title(sql_result)
-    chart_title = "Steam VR games with the highest number of concurrent users since 2016"
+    chart_title = "Steam VR apps with the highest number of concurrent users since 2016"
     labels = ("The maximum number of concurrent users", "")
     bar_chart_plot(sql_result, chart_title, labels)
     plt.savefig('../images/top10_max_peak.png')
