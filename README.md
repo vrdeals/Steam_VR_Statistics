@@ -4,4 +4,3 @@ This project analyses all Steam VR only games and determines the daily number of
 <img src="/images/avg_peak_over_time.png" width="850" height="500">
 <img src="/images/top10_max_peak.png" width="850" height="500">
 <img src="/images/monthly_vrusage.png" width="850" height="500">
-<img src="/images/max_peak.png" width="850" height="500">

@@ -117,7 +117,7 @@ def line_charts(starting_date):
     # Chart 2
     plt.subplots()
     chart_title = "VR usage of the last 6 months based on the daily " \
-                  "peak values of all Steam VR only games"
+                  "peak values of all Steam VR only apps"
     months = ("2020-01", "2020-02", "2020-03", "2020-04", "2020-05", "2020-06")
     for month in months:
         sql_result = sql.max_peak_players_monthly(month)
@@ -136,7 +136,7 @@ def line_charts(starting_date):
 
 
 def bar_chart_plot(sql_result, chart_title, labels):
-    """Creates a chart of the 10 most used VR games since 2020 with the seaborn library."""
+    """Creates a chart of the 10 most used VR apps since 2020 with the seaborn library."""
 
     # Defines the used graphic style and reduces the text size to fit all information on the chart
     sns.set_style("whitegrid")
