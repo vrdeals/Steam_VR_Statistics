@@ -108,7 +108,7 @@ def line_charts(starting_date):
 
     # Chart 1
     chart_title = "Steam VR usage based on the monthly average " \
-                  "of the daily maximum number of concurrent users (sum of all VR only games)"
+                  "of the daily maximum number of concurrent users (VR only apps)"
     sql_result = sql.peak_players()
     line_chart_plot(sql_result, chart_title)
     update_json_data_line_charts(sql_result, "steam_vr")
