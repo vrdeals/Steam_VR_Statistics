@@ -41,6 +41,8 @@
 
   <body>
      <div id="chart"></div>
+     <div id="chart2"></div>
+     <div id="chart3"></div>
 
     <script>
 
@@ -67,7 +69,7 @@
             enabled: false
           },
           title: {
-            text: 'Anzahl monatliche Nutzer SteamVR (Durchschnitt, VR-exklusive Apps)',
+            text: 'Steam VR Nutzung aller VR only Games',
           },
           stroke: {
             width: 3,
@@ -126,6 +128,41 @@
           borderColor: '#f1f1f1',
         }
         };
+
+        var chart2 = new ApexCharts(document.querySelector("#chart2"), options2);
+        chart2.render();
+
+        var options3 = {
+                series: [],
+                    chart: {
+                    type: 'bar',
+                    height: 430,
+                    toolbar: {
+                        show: false,
+                    }
+                },
+                colors: ['#d70e4a', '#545454'],
+                noData: {
+                    text: 'Loading...'
+                },
+                dataLabels: {
+                    enabled: false,
+                    offsetX: -6,
+                    style: {
+                        fontSize: '12px',
+                        colors: ['#fff']
+                    }
+                },
+                title: {
+                    text: 'Steam VR Top 10 im Juni',
+                    align: 'left',
+                    margin: 10,
+                },
+            };
+
+        var chart3 = new ApexCharts(document.querySelector("#chart3"), options3);
+        chart3.render();
+
 
         $.getJSON('data.json', function(response) {
           chart.updateSeries([
